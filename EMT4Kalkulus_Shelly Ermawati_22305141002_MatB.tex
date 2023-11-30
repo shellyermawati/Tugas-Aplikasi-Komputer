@@ -1,0 +1,2178 @@
+\documentclass{article}
+
+\usepackage{eumat}
+
+\begin{document}
+\begin{eulernotebook}
+\eulerheading{Tugas Aplikasi Komputer}
+\begin{eulercomment}
+Nama  : Shelly Ermawati\\
+NIM   : 22305141002\\
+Kelas : Matematika B 2022
+
+
+\begin{eulercomment}
+\eulerheading{Kalkulus dengan EMT}
+\begin{eulercomment}
+Materi Kalkulus mencakup di antaranya:
+
+- Fungsi (fungsi aljabar, trigonometri, eksponensial, logaritma,
+komposisi fungsi)\\
+- Limit Fungsi,\\
+- Turunan Fungsi,\\
+- Integral Tak Tentu,\\
+- Integral Tentu dan Aplikasinya,\\
+- Barisan dan Deret (kekonvergenan barisan dan deret).
+
+EMT (bersama Maxima) dapat digunakan untuk melakukan semua perhitungan
+di dalam kalkulus, baik secara numerik maupun analitik (eksak).
+
+\end{eulercomment}
+\eulersubheading{Mendefinisikan Fungsi}
+\begin{eulercomment}
+Terdapat beberapa cara mendefinisikan fungsi pada EMT, yakni:
+
+- Menggunakan format nama\_fungsi := rumus fungsi (untuk fungsi
+numerik),\\
+- Menggunakan format nama\_fungsi \&= rumus fungsi (untuk fungsi
+simbolik, namun dapat dihitung secara numerik),\\
+- Menggunakan format nama\_fungsi \&\&= rumus fungsi (untuk fungsi
+simbolik murni, tidak dapat dihitung langsung),\\
+- Fungsi sebagai program EMT.
+
+Setiap format harus diawali dengan perintah function (bukan sebagai
+ekspresi).
+
+Berikut adalah adalah beberapa contoh cara mendefinisikan fungsi.
+\end{eulercomment}
+\begin{eulerprompt}
+>function f(x) := 2*x^2+exp(sin(x)) // fungsi numerik
+>f(0), f(1), f(pi)
+\end{eulerprompt}
+\begin{euleroutput}
+  1
+  4.31977682472
+  20.7392088022
+\end{euleroutput}
+\begin{eulerprompt}
+>function g(x) := sqrt(x^2-3*x)/(x+1)
+>g(3)
+\end{eulerprompt}
+\begin{euleroutput}
+  0
+\end{euleroutput}
+\begin{eulerprompt}
+>g(0)
+\end{eulerprompt}
+\begin{euleroutput}
+  0
+\end{euleroutput}
+\begin{eulerprompt}
+>g(1)
+\end{eulerprompt}
+\begin{euleroutput}
+  Floating point error!
+  Error in sqrt
+  Try "trace errors" to inspect local variables after errors.
+  g:
+      useglobal; return sqrt(x^2-3*x)/(x+1) 
+  Error in:
+  g(1) ...
+      ^
+\end{euleroutput}
+\begin{eulerprompt}
+>f(g(5)) // komposisi fungsi
+\end{eulerprompt}
+\begin{euleroutput}
+  2.20920171961
+\end{euleroutput}
+\begin{eulerprompt}
+>g(f(5))
+\end{eulerprompt}
+\begin{euleroutput}
+  0.950898070639
+\end{euleroutput}
+\begin{eulerprompt}
+>f(0:10) // nilai-nilai f(1), f(2), ..., f(10)
+\end{eulerprompt}
+\begin{euleroutput}
+  [1,  4.31978,  10.4826,  19.1516,  32.4692,  50.3833,  72.7562,
+  99.929,  130.69,  163.51,  200.58]
+\end{euleroutput}
+\begin{eulerprompt}
+>fmap(0:10) // sama dengan f(0:10), berlaku untuk semua fungsi
+\end{eulerprompt}
+\begin{euleroutput}
+  [1,  4.31978,  10.4826,  19.1516,  32.4692,  50.3833,  72.7562,
+  99.929,  130.69,  163.51,  200.58]
+\end{euleroutput}
+\begin{eulercomment}
+Misalkan kita akan mendefinisikan fungsi
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f(x) = \begin{cases} x^3 & x>0 \\ x^2 & x\le 0. \end{cases}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Fungsi tersebut tidak dapat didefinisikan sebagai fungsi numerik
+secara "inline" menggunakan format :=, melainkan didefinisikan sebagai
+program. Perhatikan, kata "map" digunakan agar fungsi dapat menerima
+vektor sebagai input, dan hasilnya berupa vektor. Jika tanpa kata
+"map" fungsinya hanya dapat menerima input satu nilai.
+\end{eulercomment}
+\begin{eulerprompt}
+>function map f(x) ...
+\end{eulerprompt}
+\begin{eulerudf}
+    if x>0 then return x^3
+    else return x^2
+    endif;
+  endfunction
+\end{eulerudf}
+\begin{eulerprompt}
+>f(1)
+\end{eulerprompt}
+\begin{euleroutput}
+  1
+\end{euleroutput}
+\begin{eulerprompt}
+>f(-2)
+\end{eulerprompt}
+\begin{euleroutput}
+  4
+\end{euleroutput}
+\begin{eulerprompt}
+>f(-5:5)
+\end{eulerprompt}
+\begin{euleroutput}
+  [25,  16,  9,  4,  1,  0,  1,  8,  27,  64,  125]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(1.5); plot2d("f(x)",-5,5):
+\end{eulerprompt}
+\eulerimg{17}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-002.png}
+\begin{eulerprompt}
+>function f(x) &= 2*E^x // fungsi simbolik
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                      x
+                                   2 E
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>function g(x) &= 3*x+1
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 3 x + 1
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>function h(x) &= f(g(x)) // komposisi fungsi
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                   3 x + 1
+                                2 E
+  
+\end{euleroutput}
+\eulerheading{Latihan}
+\begin{eulercomment}
+Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+definisikan di EMT pada baris-baris perintah berikut (jika perlu
+tambahkan lagi). Untuk setiap fungsi, hitung beberapa nilainya, baik
+untuk satu nilai maupun vektor. Gambar grafik tersebut.
+
+Juga, carilah fungsi beberapa (dua) variabel. Lakukan hal sama seperti
+di atas.
+
+1.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f(x)=x^3+4x^2+4x+2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= (x^3+4*x^2+4*x+2) // fungsi simbolik
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                            3      2
+                           x  + 4 x  + 4 x + 2
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>function f(x) := (x^3+4*x^2+4*x+2) // fungsi numerik
+>f(1), f(4), f(8)
+\end{eulerprompt}
+\begin{euleroutput}
+  11
+  146
+  802
+\end{euleroutput}
+\begin{eulerprompt}
+>f(-2:2)
+\end{eulerprompt}
+\begin{euleroutput}
+  [2,  1,  2,  11,  34]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(1.5); plot2d("f(x)",-2,2):
+\end{eulerprompt}
+\eulerimg{17}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-004.png}
+\begin{eulercomment}
+2.
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+h(x)= cos(x)-4
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function h(x) &= cos(x)-4
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                cos(x) - 4
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>function h(x) := cos(x)-4
+>h(pi), h(pi/2)
+\end{eulerprompt}
+\begin{euleroutput}
+  -5
+  -4
+\end{euleroutput}
+\begin{eulerprompt}
+>h(pi/2:2pi)
+\end{eulerprompt}
+\begin{euleroutput}
+  [-4,  -4.84147,  -4.9093,  -4.14112,  -3.2432]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(1.5); plot2d("h(x)",pi,2pi):
+\end{eulerprompt}
+\eulerimg{17}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-005.png}
+\begin{eulercomment}
+3. Mendefinisikan fungsi\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+p(x) = \begin{cases} x^2-1 & x>0 \\ x^2 & x\le 0. \end{cases}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function map p(x)
+\end{eulerprompt}
+\begin{eulerudf}
+     if x>0 then return x^3
+     else return x^2
+     endif;
+  endfunction
+\end{eulerudf}
+\begin{eulerprompt}
+>p(3)
+\end{eulerprompt}
+\begin{euleroutput}
+  27
+\end{euleroutput}
+\begin{eulerprompt}
+>p(-2)
+\end{eulerprompt}
+\begin{euleroutput}
+  4
+\end{euleroutput}
+\begin{eulerprompt}
+>p(-2:2)
+\end{eulerprompt}
+\begin{euleroutput}
+  [4,  1,  0,  1,  8]
+\end{euleroutput}
+\begin{eulerprompt}
+>pmap(-2:2)
+\end{eulerprompt}
+\begin{euleroutput}
+  [4,  1,  0,  1,  8]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(1.5); plot2d("p(x)",-5,5):
+\end{eulerprompt}
+\eulerimg{17}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-006.png}
+\begin{eulercomment}
+4
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+k(x)= \frac{1}{x-2}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function k(x) := 1/(x-2)
+>k(5), k(7), k(3)
+\end{eulerprompt}
+\begin{euleroutput}
+  0.333333333333
+  0.2
+  1
+\end{euleroutput}
+\begin{eulerprompt}
+>k(f(5))
+\end{eulerprompt}
+\begin{euleroutput}
+  0.00408163265306
+\end{euleroutput}
+\begin{eulerprompt}
+>k(3:15)
+\end{eulerprompt}
+\begin{euleroutput}
+  [1,  0.5,  0.333333,  0.25,  0.2,  0.166667,  0.142857,  0.125,
+  0.111111,  0.1,  0.0909091,  0.0833333,  0.0769231]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(1.5); plot2d("k(x)",-5,5):
+\end{eulerprompt}
+\eulerimg{17}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-008.png}
+\begin{eulercomment}
+5.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+g(x)=\sqrt{x-5}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function g(x) := sqrt(x-5)
+>g(14), g(105), g(30)
+\end{eulerprompt}
+\begin{euleroutput}
+  3
+  10
+  5
+\end{euleroutput}
+\begin{eulerprompt}
+>f(g(5)) // komposisi fungsi
+\end{eulerprompt}
+\begin{euleroutput}
+  2
+\end{euleroutput}
+\begin{eulerprompt}
+>g(f(5))
+\end{eulerprompt}
+\begin{euleroutput}
+  15.5563491861
+\end{euleroutput}
+\begin{eulerprompt}
+>g(5:10)
+\end{eulerprompt}
+\begin{euleroutput}
+  [0,  1,  1.41421,  1.73205,  2,  2.23607]
+\end{euleroutput}
+\begin{eulerprompt}
+>gmap(5:10)
+\end{eulerprompt}
+\begin{euleroutput}
+  [0,  1,  1.41421,  1.73205,  2,  2.23607]
+\end{euleroutput}
+\begin{eulerprompt}
+>aspect(2); plot2d("g(x)",-10,10):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-009.png}
+\eulerheading{Menghitung Limit}
+\begin{eulercomment}
+Perhitungan limit pada EMT dapat dilakukan dengan menggunakan fungsi
+Maxima, yakni "limit". Fungsi "limit" dapat digunakan untuk menghitung
+limit fungsi dalam bentuk ekspresi maupun fungsi yang sudah
+didefinisikan sebelumnya. Nilai limit dapat dihitung pada sebarang
+nilai atau pada tak hingga (-inf, minf, dan inf). Limit kiri dan limit
+kanan juga dapat dihitung, dengan cara memberi opsi "plus" atau
+"minus". Hasil limit dapat berupa nilai, "und' (tak definisi), "ind"
+(tak tentu namun terbatas), "infinity" (kompleks tak hingga).
+
+Perhatikan beberapa contoh berikut. Perhatikan cara menampilkan
+perhitungan secara lengkap, tidak hanya menampilkan hasilnya saja.
+\end{eulercomment}
+\begin{eulerprompt}
+>$showev('limit(1/(2*x-1),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{1}{2\,x-1}}=-1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x^2-3*x-10)/(x-5),x,5))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 5}{\frac{x^2-3\,x-10}{x-5}}=7
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(sin(x)/x,x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{\sin x}{x}}=1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("sin(x)/x",-pi,pi):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-013.png}
+\begin{eulerprompt}
+>$showev('limit(sin(x^3)/x,x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{\sin x^3}{x}}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(log(x), x, minf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow  -\infty }{\log x}={\it infinity}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((-2)^x,x, inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\left(-2\right)^{x}}={\it infinity}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(t-sqrt(2-t),t,2,minus))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{t\uparrow 2}{t-\sqrt{2-t}}=2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(t-sqrt(2-t),t,5,plus)) // Perhatikan hasilnya
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{t\downarrow 5}{t-\sqrt{2-t}}=5-\sqrt{3}\,i
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("x-sqrt(2-x)",-2,5):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-019.png}
+\begin{eulerprompt}
+>$showev('limit((x^2-9)/(2*x^2-5*x-3),x,3))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 3}{\frac{x^2-9}{2\,x^2-5\,x-3}}=\frac{6}{7}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((1-cos(x))/x,x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{1-\cos x}{x}}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x^2+abs(x))/(x^2-abs(x)),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{\left| x\right| +x^2}{x^2-\left| x  \right| }}=-1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((1+1/x)^x,x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\left(\frac{1}{x}+1\right)^{x}}=e
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((1+k/x)^x,x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\left(\frac{k}{x}+1\right)^{x}}=e^{k}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((1+x)^(1/x),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\left(x+1\right)^{\frac{1}{x}}}=e
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x/(x+k))^x,x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\left(\frac{x}{x+k}\right)^{x}}=e^ {- k   }
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(sin(1/x),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\sin \left(\frac{1}{x}\right)}={\it ind}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(sin(1/x),x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\sin \left(\frac{1}{x}\right)}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("sin(1/x)",-5,5):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-029.png}
+\eulerheading{Latihan}
+\begin{eulercomment}
+Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+definisikan di EMT pada baris-baris perintah berikut (jika perlu
+tambahkan lagi). Untuk setiap fungsi, hitung nilai limit fungsi
+tersebut di beberapa nilai dan di tak hingga. Gambar grafik fungsi
+tersebut untuk mengkonfirmasi nilai-nilai limit tersebut.
+
+
+1.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{x\to 0} (x+1)^{\frac{2}{x}}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x+1)^(3/x),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\left(x+1\right)^{\frac{3}{x}}}=e^3
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("(x+1)^(3/x)",-5,5):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-032.png}
+\begin{eulercomment}
+2. Hitung nilai limit berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim \limits_{x \to 3} \frac{x^4-18x^2+81}{(x-3)^2}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+\lim \limits_{x \to \infty} \frac{x^4-18x^2+81}{(x-3)^2}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x^4-18*x^2+81)/(x-3)^2,x,3))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 3}{\frac{x^4-18\,x^2+81}{\left(x-3\right)^2}}=36
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((x^4-18*x^2+81)/(x-3)^2,x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\frac{x^4-18\,x^2+81}{\left(x-3\right)^  2}}=\infty 
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("(x^4-18*x^2+81)/(x-3)^2",-4,4):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-037.png}
+\begin{eulercomment}
+3.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{x\to 0} x^2 sin\frac{\pi}{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(x^4*sin(pi/x),x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\sin \left(\frac{\pi}{x}\right)\,x^4}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("x^4*sin(pi/x)",-pi,pi):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-040.png}
+\begin{eulercomment}
+3. Andaikan\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f(x)=\frac{ln\ x}{1+(ln\ x)^2}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+untuk x dalam (0,inf).\\
+Carilah:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim \limits_{x \to 0^-} f(x)\ dan \lim \limits_{x \to \infty} f(x)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(ln(x)/(1+(ln(x)^2)),x,0,plus))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\downarrow 0}{\frac{\log x}{\log ^2x+1}}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(ln(x)/(1+(ln(x)^2)),x,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow \infty }{\frac{\log x}{\log ^2x+1}}=0
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("ln(x)/(1+(ln(x)^2))",-1,1):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-045.png}
+\begin{eulercomment}
+4.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{x\to 1^-} \frac{1}{1-x}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+\lim_{x\to 1^+} \frac{1}{1-x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(1/(1-x),x,1,minus))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\uparrow 1}{\frac{1}{1-x}}=\infty 
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(1/(1-x),x,1,plus))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\downarrow 1}{\frac{1}{1-x}}= -\infty 
+\]
+\end{eulerformula}
+\begin{eulercomment}
+5.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{x\to 0} \frac{tan(4x)}{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(tan(4*x)/x,x,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{x\rightarrow 0}{\frac{\tan \left(4\,x\right)}{x}}=4
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("tan(x)/x",-pi,pi):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-052.png}
+\eulerheading{Turunan Fungsi}
+\begin{eulercomment}
+Definisi turunan:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f'(x) = \lim_{h\to 0} \frac{f(x+h)-f(x)}{h}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Berikut adalah contoh-contoh menentukan turunan fungsi dengan
+menggunakan definisi turunan (limit).
+\end{eulercomment}
+\begin{eulerprompt}
+>$showev('limit(((x+h)^n-x^n)/h,h,0)) // turunan x^n
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{n}-x^{n}}{h}}=n\,x^{n  -1}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+limit tersebut benar, sehingga benar turunan fungsinya benar.  Tulis
+penjelasan Anda di komentar ini.
+
+Sebagai petunjuk, ekspansikan (x+h)\textasciicircum{}n dengan menggunakan teorema
+binomial.
+
+Bukti:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f'(x)=\lim_{h\to 0} \frac{(x+h)^n-x^n}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \frac{x^n+nx^{n-1}h+\frac{n(n-1)}{2}x^{n-2}h^2+...+nxh^{n-1}+h^n-x^n}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \frac{h\left [nx^{n-1}+\frac{n(n-1)}{2}x^{n-2}h+...+nxh^{n-2}+h^{n-1}\right ]}{h}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Di dalam tanda kurung siku, semua suku kecuali yang pertama mempunyai
+h sebagai faktor, sehingga masing-masing suku ini mempunyai limit nol
+bila h mendekati nol. Jadi\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f'(x)=nx^{n-1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((sin(x+h)-sin(x))/h,h,0)) // turunan sin(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\sin \left(x+h\right)-\sin x}{h}}=\cos   x
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+limit tersebut\\
+benar, sehingga benar turunan fungsinya benar.  Tulis penjelasan Anda
+di komentar ini.
+
+Sebagai petunjuk, ekspansikan sin(x+h) dengan menggunakan rumus jumlah
+dua sudut.
+
+Bukti:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+D_x(sin\ x)=\lim_{h\to 0} \frac{sin(x+h)-sin\ x}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \frac{sin\ x\ cos\ h+cos\ x\ sin\ h-sin\ x}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} (-sin\ x\frac{1-cos\ h}{h}+cos\ x\frac{sin\ h}{h})
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=(-sin\ x)\left [\lim_{h\to 0} \frac{1-cos\ h}{h} \right ]+(cos\ x)\left [\lim_{h\to 0} \frac{sin\ h}{h}\right ]
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=(-sin\ x)\cdot 0+(cos\ x)\cdot 1
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=cos\ x
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Jadi, terbukti bahwa\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+D_x(sin\ x)=cos\ x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((log(x+h)-log(x))/h,h,0)) // turunan log(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\log \left(x+h\right)-\log x}{h}}=  \frac{1}{x}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+limit tersebut\\
+benar, sehingga benar turunan fungsinya benar.  Tulis penjelasan Anda
+di komentar ini.
+
+Sebagai petunjuk, gunakan sifat-sifat logaritma dan hasil limit pada
+bagian sebelumnya di atas.
+
+Bukti:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+D_xlog(x)=\lim_{h\to 0} \frac{log(x+h)-log\ x}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \frac{log\left (\frac{x+h}{x}\right )}{h}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \frac{1}{h}\left (log\left (1+\frac{h}{x}\right )\right )
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\lim_{h\to 0} \left (log\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+= log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Dengan\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{x\to 0} (1+x)^{\frac{1}{x}}=e
+\]
+\end{eulerformula}
+\begin{eulercomment}
+maka\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )^{\frac{h}{x}\cdot \frac{1}{h}}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+= log\ e^{\frac{1}{x}}
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\frac{1}{x}log\ e
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\frac{1}{x}\cdot 1
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+=\frac{1}{x}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Jadi, terbukti bahwa\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+D_xlog(x)=\frac{1}{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((1/(x+h)-1/x)/h,h,0)) // turunan 1/x
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\frac{1}{x+h}-\frac{1}{x}}{h}}=-\frac{1  }{x^2}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((E^(x+h)-E^x)/h,h,0)) // turunan f(x)=e^x
+\end{eulerprompt}
+\begin{euleroutput}
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Maxima is asking
+  Acceptable answers are: yes, y, Y, no, n, N, unknown, uk
+  Is x an integer?
+  
+  Use assume!
+  Error in:
+   $showev('limit((E^(x+h)-E^x)/h,h,0)) // turunan f(x)=e^x ...
+                                       ^
+\end{euleroutput}
+\begin{eulercomment}
+Maxima bermasalah dengan limit:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{h\to 0}\frac{e^{x+h}-e^x}{h}.
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Oleh karena itu diperlukan trik khusus agar hasilnya benar.
+\end{eulercomment}
+\begin{eulerprompt}
+>$showev('limit((E^h-1)/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}=1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$factor(E^(x+h)-E^x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\left(e^{h}-1\right)\,e^{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(factor((E^(x+h)-E^x)/h),h,0)) // turunan f(x)=e^x
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\left(\lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}\right)\,e^{x}=e^{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= x^x
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                     x
+                                    x
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit((f(x+h)-f(x))/h,h,0)) // turunan f(x)=x^x
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{x+h}-x^{x}}{h}}=  {\it infinity}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Di sini Maxima juga bermasalah terkait limit:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\lim_{h\to 0} \frac{(x+h)^{x+h}-x^x}{h}.
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Dalam hal ini diperlukan asumsi nilai x.
+\end{eulercomment}
+\begin{eulerprompt}
+>&assume(x>0); $showev('limit((f(x+h)-f(x))/h,h,0)) // turunan f(x)=x^x
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{x+h}-x^{x}}{h}}=x^{x}  \,\left(\log x+1\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>&forget(x>0) // jangan lupa, lupakan asumsi untuk kembali ke semula
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 [x > 0]
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>&forget(x<0)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 [x < 0]
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>&facts()
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                    []
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit((asin(x+h)-asin(x))/h,h,0)) // turunan arcsin(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\arcsin \left(x+h\right)-\arcsin x}{h}}=  \frac{1}{\sqrt{1-x^2}}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit((tan(x+h)-tan(x))/h,h,0)) // turunan tan(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\tan \left(x+h\right)-\tan x}{h}}=  \frac{1}{\cos ^2x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= sinh(x) // definisikan f(x)=sinh(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 sinh(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>function df(x) &= limit((f(x+h)-f(x))/h,h,0); $df(x) // df(x) = f'(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\frac{e^ {- x }\,\left(e^{2\,x}+1\right)}{2}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Hasilnya adalah cosh(x), karena
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\frac{e^x+e^{-x}}{2}=\cosh(x).
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["f(x)","df(x)"],-pi,pi,color=[blue,red]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-092.png}
+\eulerheading{Latihan}
+\begin{eulercomment}
+Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+definisikan di EMT pada baris-baris perintah berikut (jika perlu
+tambahkan lagi). Untuk setiap fungsi, tentukan turunannya dengan
+menggunakan definisi turunan (limit), seperti contoh-contoh tersebut.
+Gambar grafik fungsi asli dan fungsi turunannya pada sumbu koordinat
+yang sama.
+
+
+1. Gunakan definisi turunan (limit) untuk mencari turunan di x.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+F(x)=\frac{5}{x^2+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function F(x) &= 5/(x^2+1)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                    5
+                                  ------
+                                   2
+                                  x  + 1
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit(((5/((x+h)^2+1))-(5/(x^2+1)))/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\frac{5}{\left(x+h\right)^2+1}-\frac{5  }{x^2+1}}{h}}=-\frac{10\,x}{x^4+2\,x^2+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["F(x)","-(10*x)/(x^4+2*x^2+1)"],color=[blue,red]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-095.png}
+\begin{eulercomment}
+2.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+j(x)=sin 2x^3
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function j(x)&= sin(2*x)^3
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                   3
+                                sin (2 x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit((j(x+h)-j(x))/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\sin ^3\left(2\,\left(x+h\right)\right)  -\sin ^3\left(2\,x\right)}{h}}=6\,\cos \left(2\,x\right)\,\sin ^2  \left(2\,x\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function dj(x) &= limit((j(x+h)-j(x))/h,h,0); $dj(x) // dj(x) =j'(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+6\,\cos \left(2\,x\right)\,\sin ^2\left(2\,x\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["j(x)","dj(x)"],-pi,pi,color=[green,yellow]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-099.png}
+\begin{eulercomment}
+2.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+g(x)=\frac{1}{3x^3+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function g(x):=1/(3*x^3+1)
+>$showev('limit(((1/(3*(x+h)^3+1))-(1/(3*x^3+1)))/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{\frac{1}{3\,\left(x+h\right)^3+1}-  \frac{1}{3\,x^3+1}}{h}}=-\frac{9\,x^2}{9\,x^6+6\,x^3+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function dg(x) &= limit(((1/(3*(x+h)^3+1))-(1/(3*x^3+1)))/h,h,0);$df(x) // df(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\frac{e^ {- x }\,\left(e^{2\,x}+1\right)}{2}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["g(x)","g(x)"],-pi,pi,color=[blue,red]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-103.png}
+\begin{eulercomment}
+3. Carilah Dx dari fungsi berikut.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+r(x)=\frac{1}{2x}+2x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function r(x) &= 3*x^3+9
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                    3
+                                 3 x  + 9
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit(((3*(x+h)^3+9)-(3*x^3+9))/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{3\,\left(x+h\right)^3-3\,x^3}{h}}=9\,x^  2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["r(x)","9*x^2"],-1,1,color=[green,red]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-106.png}
+\begin{eulercomment}
+4. Carilah turunan dari:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+p(x)=x^3e^x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function p(x)&= x^3*E^x
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                   3  x
+                                  x  E
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit(((x+h)^3*E^(x+h)-(x^3*E^x))/h,h,0))
+\end{eulerprompt}
+\begin{euleroutput}
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Answering "Is x an integer?" with "integer"
+  Maxima is asking
+  Acceptable answers are: yes, y, Y, no, n, N, unknown, uk
+  Is x an integer?
+  
+  Use assume!
+  Error in:
+  ... showev('limit(((x+h)^3*E^(x+h)-(x^3*E^x))/h,h,0)) ...
+                                                       ^
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit((E^h-1)/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}=1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$factor((x+h)^3*E^(x+h)-(x^3*E^x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\left(e^{h}\,x^3-x^3+3\,h\,e^{h}\,x^2+3\,h^2\,e^{h}\,x+h^3\,e^{h}  \right)\,e^{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('limit(factor(((x+h)^3*E^(x+h)-(x^3*E^x))/h),h,0)) // turunan f(x)=x^3*e^x
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+e^{x}\,\left(\lim_{h\rightarrow 0}{\frac{e^{h}\,x^3-x^3+3\,h\,e^{h}  \,x^2+3\,h^2\,e^{h}\,x+h^3\,e^{h}}{h}}\right)=\left(x^3+3\,x^2  \right)\,e^{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["p(x)","x^2*E^x*(x+3)"],color=[yellow,red]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-111.png}
+\begin{eulercomment}
+5. Carilah turunan dari:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+g(x)=3sin\ x+cos\ x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function g(x) &= 3*sin(x)+cos(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                            3 sin(x) + cos(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('limit((3*sin(x+h)+cos(x+h)-(3*sin(x)+cos(x)))/h,h,0))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{3\,\sin \left(x+h\right)+\cos \left(x+h  \right)-3\,\sin x-\cos x}{h}}=3\,\cos x-\sin x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d(["g(x)","3*cos(x)-sin(x)"],color=[orange,yellow]):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-114.png}
+\eulerheading{Integral}
+\begin{eulercomment}
+EMT dapat digunakan untuk menghitung integral, baik integral tak tentu
+maupun integral tentu. Untuk integral tak tentu (simbolik) sudah tentu
+EMT menggunakan Maxima, sedangkan untuk perhitungan integral tentu EMT
+sudah menyediakan beberapa fungsi yang mengimplementasikan algoritma
+kuadratur (perhitungan integral tentu menggunakan metode numerik).
+
+Pada notebook ini akan ditunjukkan perhitungan integral tentu dengan
+menggunakan Teorema Dasar Kalkulus:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int_a^b f(x)\ dx = F(b)-F(a), \quad \text{ dengan  } F'(x) = f(x).
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Fungsi untuk menentukan integral adalah integrate. Fungsi ini dapat
+digunakan untuk menentukan, baik integral tentu maupun tak tentu (jika
+fungsinya memiliki antiderivatif). Untuk perhitungan integral tentu
+fungsi integrate menggunakan metode numerik (kecuali fungsinya tidak
+integrabel, kita tidak akan menggunakan metode ini).
+\end{eulercomment}
+\begin{eulerprompt}
+>$showev('integrate(x^n,x))
+\end{eulerprompt}
+\begin{euleroutput}
+  Answering "Is n equal to -1?" with "no"
+\end{euleroutput}
+\begin{eulerformula}
+\[
+\int {x^{n}}{\;dx}=\frac{x^{n+1}}{n+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(1/(1+x),x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\frac{1}{x+1}}{\;dx}=\log \left(x+1\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(1/(1+x^2),x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\frac{1}{x^2+1}}{\;dx}=\arctan x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(1/sqrt(1-x^2),x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\frac{1}{\sqrt{1-x^2}}}{\;dx}=\arcsin x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(sin(x),x,0,pi))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\pi}{\sin x\;dx}=2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(sin(x),x,a,b))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{a}^{b}{\sin x\;dx}=\cos a-\cos b
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(x^n,x,a,b))
+\end{eulerprompt}
+\begin{euleroutput}
+  Answering "Is n positive, negative or zero?" with "positive"
+\end{euleroutput}
+\begin{eulerformula}
+\[
+\int_{a}^{b}{x^{n}\;dx}=\frac{b^{n+1}}{n+1}-\frac{a^{n+1}}{n+1}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(x^2*sqrt(2*x+1),x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {x^2\,\sqrt{2\,x+1}}{\;dx}=\frac{\left(2\,x+1\right)^{\frac{7  }{2}}}{28}-\frac{\left(2\,x+1\right)^{\frac{5}{2}}}{10}+\frac{\left(  2\,x+1\right)^{\frac{3}{2}}}{12}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(x^2*sqrt(2*x+1),x,0,2))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{2}{x^2\,\sqrt{2\,x+1}\;dx}=\frac{2\,5^{\frac{5}{2}}}{21}-  \frac{2}{105}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$ratsimp(%)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{2}{x^2\,\sqrt{2\,x+1}\;dx}=\frac{2\,5^{\frac{7}{2}}-2}{  105}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate((sin(sqrt(x)+a)*E^sqrt(x))/sqrt(x),x,0,pi^2))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\pi^2}{\frac{\sin \left(\sqrt{x}+a\right)\,e^{\sqrt{x}}}{  \sqrt{x}}\;dx}=\left(-e^{\pi}-1\right)\,\sin a+\left(e^{\pi}+1  \right)\,\cos a
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$factor(%)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\pi^2}{\frac{\sin \left(\sqrt{x}+a\right)\,e^{\sqrt{x}}}{  \sqrt{x}}\;dx}=\left(-e^{\pi}-1\right)\,\left(\sin a-\cos a\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function map f(x) &= E^(-x^2)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                      2
+                                   - x
+                                  E
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(f(x),x))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {e^ {- x^2 }}{\;dx}=\frac{\sqrt{\pi}\,\mathrm{erf}\left(x  \right)}{2}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Fungsi f tidak memiliki antiturunan, integralnya masih memuat integral
+lain.
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+erf(x) = \int \frac{e^{-x^2}}{\sqrt{\pi}} \ dx.
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Kita tidak dapat menggunakan teorema Dasar kalkulus untuk menghitung
+integral tentu fungsi tersebut jika semua batasnya berhingga. Dalam
+hal ini dapat digunakan metode numerik (rumus kuadratur).
+
+Misalkan kita akan menghitung:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int_{0}^{\pi}{e^ {- x^2 }\;dx}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=0:0.1:pi-0.1; plot2d(x,f(x+0.1),>bar); plot2d("f(x)",0,pi,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-131.png}
+\begin{eulercomment}
+Integral tentu
+
+maxima: 'integrate(f(x),x,0,pi)
+
+dapat dihampiri dengan jumlah luas persegi-persegi panjang di bawah kurva y=f(x)
+tersebut. Langkah-langkahnya adalah sebagai berikut.
+\end{eulercomment}
+\begin{eulerprompt}
+>t &= makelist(a,a,0,pi-0.1,0.1); // t sebagai list untuk menyimpan nilai-nilai x
+>fx &= makelist(f(t[i]+0.1),i,1,length(t)); // simpan nilai-nilai f(x)
+>// jangan menggunakan x sebagai list, kecuali Anda pakar Maxima!
+\end{eulerprompt}
+\begin{eulercomment}
+Hasilnya adalah:
+
+maxima: 'integrate(f(x),x,0,pi) = 0.1*sum(fx[i],i,1,length(fx))
+
+Jumlah tersebut diperoleh dari hasil kali lebar sub-subinterval (=0.1) dan jumlah
+nilai-nilai f(x) untuk x = 0.1, 0.2, 0.3, ..., 3.2.
+\end{eulercomment}
+\begin{eulerprompt}
+>0.1*sum(f(x+0.1)) // cek langsung dengan perhitungan numerik EMT
+\end{eulerprompt}
+\begin{euleroutput}
+  0.836219610253
+\end{euleroutput}
+\begin{eulercomment}
+Untuk mendapatkan nilai integral tentu yang mendekati nilai
+sebenarnya, lebar sub-intervalnya dapat diperkecil lagi, sehingga
+daerah di bawah kurva tertutup semuanya, misalnya dapat digunakan
+lebar subinterval 0.001. (Silakan dicoba!)\\
+\end{eulercomment}
+\eulersubheading{}
+\begin{eulercomment}
+Mencoba dengan menggunakan sub-interval 0.001
+\end{eulercomment}
+\begin{eulerprompt}
+>x=0:0.001:pi-0.001; plot2d(x,f(x+0.001),>bar); plot2d("f(x)",0,pi,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-132.png}
+\begin{eulerprompt}
+>t &= makelist(a,a,0,pi-0.001,0.1); // t sebagai list untuk menyimpan nilai-nilai x
+>fx &= makelist(f(t[i]+0.001),i,1,length(t)); // simpan nilai-nilai f(x)
+\end{eulerprompt}
+\begin{eulercomment}
+Hasilnya adalah:
+
+maxima: 'integrate(f(x),x,0,pi) = 0.1*sum(fx[i],i,1,length(fx))
+
+Jumlah tersebut diperoleh dari hasil kali lebar sub-subinterval
+(=0.001) dan jumlah nilai-nilai f(x) untuk x = 0.001, 0.002, 0.003,
+..., 3.2.
+\end{eulercomment}
+\begin{eulerprompt}
+>0.001*sum(f(x+0.001)) // cek langsung dengan perhitungan numerik EMT
+\end{eulerprompt}
+\begin{euleroutput}
+  0.885719054393
+\end{euleroutput}
+\eulersubheading{}
+\begin{eulercomment}
+Meskipun Maxima tidak dapat menghitung integral tentu fungsi tersebut
+untuk batas-batas yang berhingga, namun integral tersebut dapat
+dihitung secara eksak jika batas-batasnya tak hingga. Ini adalah salah
+satu keajaiban di dalam matematika, yang terbatas tidak dapat dihitung
+secara eksak, namun yang tak hingga malah dapat dihitung secara eksak.
+\end{eulercomment}
+\begin{eulerprompt}
+>$showev('integrate(f(x),x,0,inf))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\infty }{e^ {- x^2 }\;dx}=\frac{\sqrt{\pi}}{2}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Berikut adalah contoh lain fungsi yang tidak memiliki antiderivatif, sehingga
+integral tentunya hanya dapat dihitung dengan metode numerik.
+\end{eulercomment}
+\begin{eulerprompt}
+>function f(x) &= x^x
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                     x
+                                    x
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(f(x),x,0,1))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{1}{x^{x}\;dx}=\int_{0}^{1}{x^{x}\;dx}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=0:0.1:1-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",0,1,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-135.png}
+\begin{eulercomment}
+Maxima gagal menghitung integral tentu tersebut secara langsung menggunakan perintah
+integrate. Berikut kita lakukan seperti contoh sebelumnya untuk mendapat hasil atau
+pendekatan nilai integral tentu tersebut.
+\end{eulercomment}
+\begin{eulerprompt}
+>t &= makelist(a,a,0,1-0.01,0.01);
+>fx &= makelist(f(t[i]+0.01),i,1,length(t));
+\end{eulerprompt}
+\begin{eulercomment}
+maxima: 'integrate(f(x),x,0,1) = 0.01*sum(fx[i],i,1,length(fx))
+
+Apakah hasil tersebut cukup baik? perhatikan gambarnya.
+\end{eulercomment}
+\eulerheading{Latihan}
+\begin{eulercomment}
+- Bukalah buku Kalkulus.\\
+- Cari dan pilih beberapa (paling sedikit 5 fungsi berbeda
+tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian definisikan di
+EMT pada baris-baris perintah berikut (jika perlu tambahkan lagi).\\
+- Untuk setiap fungsi, tentukan anti turunannya (jika ada), hitunglah
+integral tentu dengan batas-batas yang menarik (Anda tentukan
+sendiri), seperti contoh-contoh tersebut.\\
+- Lakukan hal yang sama untuk fungsi-fungsi yang tidak dapat
+diintegralkan (cari sedikitnya 3 fungsi).\\
+- Gambar grafik fungsi dan daerah integrasinya pada sumbu koordinat
+yang sama.\\
+- Gunakan integral tentu untuk mencari luas daerah yang dibatasi oleh
+dua kurva yang berpotongan di dua titik. (Cari dan gambar kedua kurva
+dan arsir (warnai) daerah yang dibatasi oleh keduanya.)\\
+- Gunakan integral tentu untuk menghitung volume benda putar kurva y=
+f(x) yang diputar mengelilingi sumbu x dari x=a sampai x=b, yakni
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+V = \int_a^b \pi (f(x)^2\ dx.
+\]
+\end{eulerformula}
+\begin{eulercomment}
+(Pilih fungsinya dan gambar kurva dan benda putar yang dihasilkan.
+Anda dapat mencari contoh-contoh bagaimana cara menggambar benda hasil
+perputaran suatu kurva.)\\
+- Gunakan integral tentu untuk menghitung panjang kurva y=f(x) dari
+x=a sampai x=b dengan menggunakan rumus:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+S = \int_a^b \sqrt{1+(f'(x))^2} \ dx.
+\]
+\end{eulerformula}
+\begin{eulercomment}
+(Pilih fungsi dan gambar kurvanya.)
+
+\end{eulercomment}
+\eulersubheading{}
+\begin{eulercomment}
+1. Hitunglah integral dari fungsi berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int (3x^2-2x+3)\ dx\ dan\ \int_{-1}^{2} (3x^2-2x+3)\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= 3*x^2-2*x+3
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 2
+                              3 x  - 2 x + 3
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(3*x^2-2*x+3,x)) // integral tak tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {3\,x^2-2\,x+3}{\;dx}=x^3-x^2+3\,x
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(3*x^2-2*x+3,x,-1,2)) // integral tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{-1}^{2}{3\,x^2-2\,x+3\;dx}=15
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=-1:0.1:2-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",-1,2,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-141.png}
+\begin{eulercomment}
+2. Hitunglah integral dari fungsi berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int \frac{sin\ x}{1+cos\ x}\ dx\ dan\ \int_{-\frac{\pi}{2}}^{\frac{\pi}{2}} \frac{sin\ x}{1+cos\ x}\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function h(x) &= sin(x)/(1+cos(x))
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                  sin(x)
+                                ----------
+                                cos(x) + 1
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(h(x),x)) // integral tak tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\frac{\sin x}{\cos x+1}}{\;dx}=-\log \left(\cos x+1\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(h(x),x,0,pi/2)) // integral tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\frac{\pi}{2}}{\frac{\sin x}{\cos x+1}\;dx}=\log 2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=-pi/2:0.1:pi/2-0.01; plot2d(x,h(x+0.01),>bar); plot2d("h(x)",-pi/2,pi/2,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-145.png}
+\begin{eulercomment}
+3. Hitunglah integral dari fungsi berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int x^3\ dx\ dan\ \int_0^2 x^3\ dx\
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= x^3
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                     3
+                                    x
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(x^3,x)) // integral tak tentu dari x^3
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {x^3}{\;dx}=\frac{x^4}{4}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(x^3,x,0,2)) // integral tentu dari x^3
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{2}{x^3\;dx}=4
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=0:0.1:2-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",0,2,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-149.png}
+\begin{eulercomment}
+4. Hitunglah integral dari fungsi berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int cos^2x\ sin\ x\ dx\ dan\ \int_{0}^{\frac{\pi}{2}} cos^2x\ sin\ x\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function h(x) &= (cos(x))^2*sin(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 2
+                              cos (x) sin(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(h(x),x)) // integral tak tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\cos ^2x\,\sin x}{\;dx}=-\frac{\cos ^3x}{3}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(h(x),x,0,pi/2)) // integral tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{\frac{\pi}{2}}{\cos ^2x\,\sin x\;dx}=\frac{1}{3}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=0:0.1:pi/2-0.01; plot2d(x,h(x+0.01),>bar); plot2d("h(x)",0,pi/2,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-153.png}
+\begin{eulercomment}
+5. Hitunglah integral dari fungsi berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int e^{-0.1x}sin\ x\ dx\ dan\ \int_{0}^{8\pi} e^{-0.1x}sin\ x\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function g(x) &= E^(-0.1*x)*sin(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                              - 0.1 x
+                             E        sin(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(g(x),x)) // integral tak tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {e^ {- 0.1\,x }\,\sin x}{\;dx}=0.9900990099009901\,e^ {- 0.1\,  x }\,\left(-0.1\,\sin x-\cos x\right)
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(g(x),x,0,8*pi)) // integral tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{0}^{8\,\pi}{e^ {- 0.1\,x }\,\sin x\;dx}=\frac{100}{101}-  \frac{100\,e^ {- \frac{4\,\pi}{5} }}{101}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>x=0:0.5:8*pi-0.01; plot2d(x,g(x+0.01),>bar); plot2d("g(x)",0,8*pi,>add):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-157.png}
+\begin{eulercomment}
+6.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int \left |\frac{sin\ x}{x}\right |\ dx
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Apakah fungsi di atas dapat diintegralkan?
+\end{eulercomment}
+\begin{eulerprompt}
+>function p(x) &= abs(sin(x)/x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                               mabs(sin(x))
+                               ------------
+                                 mabs(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(p(x),x)) // integral tak tentu
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int {\frac{\left| \sin x\right| }{\left| x\right| }}{\;dx}=\int {  \frac{\left| \sin x\right| }{\left| x\right| }}{\;dx}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Jadi, untuk\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int \left |\frac{sin\ x}{x}\right |\ dx
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Tidak ada antiderivatif dasar,\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\frac{sin\ x}{x}\ge 0
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Tidak ada antiderivatif dasar,\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\frac{sin\ x}{x} < 0
+\]
+\end{eulerformula}
+\begin{eulercomment}
+7. Sketsakan daerah yang dibatasi oleh grafik-grafik persamaan yang
+diketahui, hampiri luasnya, susun suatu integral dan hitunglah luas
+daerahnya.\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+y=x+4 \ dan\ y=x^2-2
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= x+4; ...
+>function g(x) &=x^2-2;
+>plot2d(["f(x)","g(x)"],-3,4):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-164.png}
+\begin{eulercomment}
+Dari gambar di atas terlihat bahwa fungsi y=x+4 berada di lebih atas
+daripada y=x\textasciicircum{}2-2, dan keduanya berpotongan di x=-2 dan x=3, maka
+hitungan integral yang tepat untuk daerah di atas adalah\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\int_{-2}^{3} (x+4)-(x^2-2)\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("f(x)","g(x)",xmin=-2,xmax=3,>filled,style="/"):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-166.png}
+\begin{eulerprompt}
+>function h(x) &= f(x)-g(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                  2
+                               - x  + x + 6
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(h(x),x,-2,3))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{-2}^{3}{-x^2+x+6\;dx}=\frac{125}{6}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Jadi, luas daerah yang dibatasi oleh kurva\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+y=x+4\ dan\ y=x^2-2
+\]
+\end{eulerformula}
+\begin{eulercomment}
+adalah\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\frac{125}{6}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+8. Tentukan volume benda putar yang dibentuk oleh daerah R yang
+dibatasi oleh kurva y=sqrt(x), sumbu x dan garis x=4 apabila R diputar
+mengelilingi sumbu x.\\
+Penyelesaian:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+V=\int_{a}^{b} \pi(f(x))^2\ dx
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+V=\int_{0}^{4} \pi(\sqrt(x))^2\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>function f(x) &= sqrt(x)
+\end{eulerprompt}
+\begin{euleroutput}
+  
+                                 sqrt(x)
+  
+\end{euleroutput}
+\begin{eulerprompt}
+>$showev('integrate(pi*(f(x))^2,x,0,4))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\pi\,\int_{0}^{4}{x\;dx}=8\,\pi
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot3d("sqrt(x)",a=0,b=4,rotate=true,grid=7):
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-173.png}
+\begin{eulercomment}
+9. Tentukan panjang kurva berikut:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+y=4x^{\frac{3}{2}}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+antara x=1/3 dan x=5.\\
+Penyelesaian:\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+S=\int_{a}^{b} \sqrt{1+(f'(x))^2}\ dx
+\]
+\end{eulerformula}
+\begin{eulerformula}
+\[
+S=\int_{\frac{1}{3}}^{5} \sqrt{1+(y')^2}\ dx
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>plot2d("4*x^(3/2)",-3/2,5): 
+\end{eulerprompt}
+\eulerimg{13}{images/EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-177.png}
+\begin{eulerprompt}
+>function f(x) &= 4*x^(3/2); ...
+>$showev('limit((4*(x+h)^(3/2)-(4*x^(3/2)))/h,h,0)) // mencari df(x)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\lim_{h\rightarrow 0}{\frac{4\,\left(x+h\right)^{\frac{3}{2}}-4\,x  ^{\frac{3}{2}}}{h}}=6\,\sqrt{x}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$showev('integrate(sqrt(1+(6*sqrt(x))^2),x,1/3,5))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\int_{\frac{1}{3}}^{5}{\sqrt{36\,x+1}\;dx}=\frac{181^{\frac{3}{2}}  }{54}-\frac{13^{\frac{3}{2}}}{54}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Jadi, panjang kurva y=4*x\textasciicircum{}(3/2) di antara x=1/3 dan x=5 adalah\\
+\end{eulercomment}
+\begin{eulerformula}
+\[
+\frac{1}{54}(181\sqrt{181}-13\sqrt{13})
+\]
+\end{eulerformula}
+\eulerheading{Barisan dan Deret}
+\begin{eulercomment}
+(Catatan: bagian ini belum lengkap. Anda dapat membaca contoh-contoh pengguanaan EMT dan
+Maxima untuk menghitung limit barisan, rumus jumlah parsial suatu deret, jumlah tak hingga
+suatu deret konvergen, dan sebagainya. Anda dapat mengeksplor contoh-contoh di EMT atau
+perbagai panduan penggunaan Maxima di software Maxima atau dari Internet.)
+
+Barisan dapat didefinisikan dengan beberapa cara di dalam EMT, di antaranya:
+
+- dengan cara yang sama seperti mendefinisikan vektor dengan elemen-elemen beraturan
+(menggunakan titik dua ":");\\
+- menggunakan perintah "sequence" dan rumus barisan (suku ke -n);\\
+- menggunakan perintah "iterate" atau "niterate";\\
+- menggunakan fungsi Maxima "create\_list" atau "makelist" untuk menghasilkan barisan
+simbolik;\\
+- menggunakan fungsi biasa yang inputnya vektor atau barisan;\\
+- menggunakan fungsi rekursif.
+
+EMT menyediakan beberapa perintah (fungsi) terkait barisan, yakni:
+
+- sum: menghitung jumlah semua elemen suatu barisan\\
+- cumsum: jumlah kumulatif suatu barisan\\
+- differences: selisih antar elemen-elemen berturutan
+
+EMT juga dapat digunakan untuk menghitung jumlah deret berhingga maupun deret tak hingga,
+dengan menggunakan perintah (fungsi) "sum". Perhitungan dapat dilakukan secara numerik
+maupun simbolik dan eksak.
+
+Berikut adalah beberapa contoh perhitungan barisan dan deret menggunakan EMT.
+\end{eulercomment}
+\begin{eulerprompt}
+>1:10 // barisan sederhana
+\end{eulerprompt}
+\begin{euleroutput}
+  [1,  2,  3,  4,  5,  6,  7,  8,  9,  10]
+\end{euleroutput}
+\begin{eulerprompt}
+>1:2:30
+\end{eulerprompt}
+\begin{euleroutput}
+  [1,  3,  5,  7,  9,  11,  13,  15,  17,  19,  21,  23,  25,  27,  29]
+\end{euleroutput}
+\begin{eulerprompt}
+>sum(1:2:30), sum(1/(1:2:30))
+\end{eulerprompt}
+\begin{euleroutput}
+  225
+  2.33587263431
+\end{euleroutput}
+\begin{eulerprompt}
+>$'sum(k, k, 1, n) = factor(ev(sum(k, k, 1, n),simpsum=true)) // simpsum:menghitung deret secara simbolik
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{k=1}^{n}{k}=\frac{n\,\left(n+1\right)}{2}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$'sum(1/(3^k+k), k, 0, inf) = factor(ev(sum(1/(3^k+k), k, 0, inf),simpsum=true))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{k=0}^{\infty }{\frac{1}{3^{k}+k}}=\sum_{k=0}^{\infty }{\frac{  1}{3^{k}+k}}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Di sini masih gagal, hasilnya tidak dihitung.
+\end{eulercomment}
+\begin{eulerprompt}
+>$'sum(1/x^2, x, 1, inf)= ev(sum(1/x^2, x, 1, inf),simpsum=true) // ev: menghitung nilai ekspresi
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{x=1}^{\infty }{\frac{1}{x^2}}=\frac{\pi^2}{6}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$'sum((-1)^(k-1)/k, k, 1, inf) = factor(ev(sum((-1)^(x-1)/x, x, 1, inf),simpsum=true))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{k=1}^{\infty }{\frac{\left(-1\right)^{k-1}}{k}}=-\sum_{x=1}^{  \infty }{\frac{\left(-1\right)^{x}}{x}}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Di sini masih gagal, hasilnya tidak dihitung.
+\end{eulercomment}
+\begin{eulerprompt}
+>$'sum((-1)^k/(2*k-1), k, 1, inf) = factor(ev(sum((-1)^k/(2*k-1), k, 1, inf),simpsum=true))
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{k=1}^{\infty }{\frac{\left(-1\right)^{k}}{2\,k-1}}=\sum_{k=1  }^{\infty }{\frac{\left(-1\right)^{k}}{2\,k-1}}
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$ev(sum(1/n!, n, 0, inf),simpsum=true)
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\sum_{n=0}^{\infty }{\frac{1}{n!}}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Di sini masih gagal, hasilnya tidak dihitung, harusnya hasilnya e.
+\end{eulercomment}
+\begin{eulerprompt}
+>&assume(abs(x)<1); $'sum(a*x^k, k, 0, inf)=ev(sum(a*x^k, k, 0, inf),simpsum=true), &forget(abs(x)<1);
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+a\,\sum_{k=0}^{\infty }{x^{k}}=\frac{a}{1-x}
+\]
+\end{eulerformula}
+\begin{eulercomment}
+Deret geometri tak hingga, dengan asumsi rasional antara -1 dan 1.
+\end{eulercomment}
+\eulerheading{Deret Taylor}
+\begin{eulercomment}
+Deret Taylor suatu fungsi f yang diferensiabel sampai tak hingga di
+sekitar x=a adalah:
+
+\end{eulercomment}
+\begin{eulerformula}
+\[
+f(x) = \sum_{k=0}^\infty \frac{(x-a)^k f^{(k)}(a)}{k!}.
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$'e^x =taylor(exp(x),x,0,10) // deret Taylor e^x di sekitar x=0, sampai suku ke-11
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+e^{x}=\frac{x^{10}}{3628800}+\frac{x^9}{362880}+\frac{x^8}{40320}+  \frac{x^7}{5040}+\frac{x^6}{720}+\frac{x^5}{120}+\frac{x^4}{24}+  \frac{x^3}{6}+\frac{x^2}{2}+x+1
+\]
+\end{eulerformula}
+\begin{eulerprompt}
+>$'log(x)=taylor(log(x),x,1,10)// deret log(x) di sekitar x=1
+\end{eulerprompt}
+\begin{eulerformula}
+\[
+\log x=x-\frac{\left(x-1\right)^{10}}{10}+\frac{\left(x-1\right)^9  }{9}-\frac{\left(x-1\right)^8}{8}+\frac{\left(x-1\right)^7}{7}-  \frac{\left(x-1\right)^6}{6}+\frac{\left(x-1\right)^5}{5}-\frac{  \left(x-1\right)^4}{4}+\frac{\left(x-1\right)^3}{3}-\frac{\left(x-1  \right)^2}{2}-1
+\]
+\end{eulerformula}
+\end{eulernotebook}
+\end{document}

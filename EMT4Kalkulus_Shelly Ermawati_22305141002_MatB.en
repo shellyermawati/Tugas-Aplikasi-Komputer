@@ -1,0 +1,1158 @@
+﻿% * Tugas Aplikasi Komputer
+% 
+% Nama  : Shelly Ermawati
+%% NIM   : 22305141002
+%% Kelas : Matematika B 2022
+% 
+% 
+% * Kalkulus dengan EMT
+% 
+% Materi Kalkulus mencakup di antaranya:
+% 
+% - Fungsi (fungsi aljabar, trigonometri, eksponensial, logaritma,
+% komposisi fungsi)
+%% - Limit Fungsi,
+%% - Turunan Fungsi,
+%% - Integral Tak Tentu,
+%% - Integral Tentu dan Aplikasinya,
+%% - Barisan dan Deret (kekonvergenan barisan dan deret).
+% 
+% EMT (bersama Maxima) dapat digunakan untuk melakukan semua perhitungan
+% di dalam kalkulus, baik secara numerik maupun analitik (eksak).
+% 
+% ** Mendefinisikan Fungsi
+% 
+% Terdapat beberapa cara mendefinisikan fungsi pada EMT, yakni:
+% 
+% - Menggunakan format nama_fungsi := rumus fungsi (untuk fungsi
+% numerik),
+%% - Menggunakan format nama_fungsi &= rumus fungsi (untuk fungsi
+% simbolik, namun dapat dihitung secara numerik),
+%% - Menggunakan format nama_fungsi &&= rumus fungsi (untuk fungsi
+% simbolik murni, tidak dapat dihitung langsung),
+%% - Fungsi sebagai program EMT.
+% 
+% Setiap format harus diawali dengan perintah function (bukan sebagai
+% ekspresi).
+% 
+% Berikut adalah adalah beberapa contoh cara mendefinisikan fungsi.
+>function f(x) := 2*x^2+exp(sin(x)) // fungsi numerik
+>f(0), f(1), f(pi)
+1
+4.31977682472
+20.7392088022
+>function g(x) := sqrt(x^2-3*x)/(x+1)
+>g(3)
+0
+>g(0)
+0
+>g(1)
+Floating point error!
+Error in sqrt
+Try "trace errors" to inspect local variables after errors.
+g:
+    useglobal; return sqrt(x^2-3*x)/(x+1) 
+Error in:
+g(1) ...
+    ^
+>f(g(5)) // komposisi fungsi
+2.20920171961
+>g(f(5))
+0.950898070639
+>f(0:10) // nilai-nilai f(1), f(2), ..., f(10)
+[1,  4.31978,  10.4826,  19.1516,  32.4692,  50.3833,  72.7562,
+99.929,  130.69,  163.51,  200.58]
+>fmap(0:10) // sama dengan f(0:10), berlaku untuk semua fungsi
+[1,  4.31978,  10.4826,  19.1516,  32.4692,  50.3833,  72.7562,
+99.929,  130.69,  163.51,  200.58]
+>
+% Misalkan kita akan mendefinisikan fungsi
+% 
+% latex: f(x) = \begin{cases} x^3 & x>0 \\ x^2 & x\le 0. \end{cases}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-001.png
+% // latex: f(x) = \begin{cases} x^3 & x>0 \\ x^2 & x\le 0. \end{cases}
+% 
+% Fungsi tersebut tidak dapat didefinisikan sebagai fungsi numerik
+% secara "inline" menggunakan format :=, melainkan didefinisikan sebagai
+% program. Perhatikan, kata "map" digunakan agar fungsi dapat menerima
+% vektor sebagai input, dan hasilnya berupa vektor. Jika tanpa kata
+% "map" fungsinya hanya dapat menerima input satu nilai.
+>function map f(x) ...
+$  if x>0 then return x^3
+$  else return x^2
+$  endif;
+$endfunction
+>f(1)
+1
+>f(-2)
+4
+>f(-5:5)
+[25,  16,  9,  4,  1,  0,  1,  8,  27,  64,  125]
+>aspect(1.5); plot2d("f(x)",-5,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-002.png
+>function f(x) &= 2*E^x // fungsi simbolik
+
+                                    x
+                                 2 E
+
+>function g(x) &= 3*x+1
+
+                               3 x + 1
+
+>function h(x) &= f(g(x)) // komposisi fungsi
+
+                                 3 x + 1
+                              2 E
+
+% * Latihan
+% 
+% Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+% fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+% definisikan di EMT pada baris-baris perintah berikut (jika perlu
+% tambahkan lagi). Untuk setiap fungsi, hitung beberapa nilainya, baik
+% untuk satu nilai maupun vektor. Gambar grafik tersebut.
+% 
+% Juga, carilah fungsi beberapa (dua) variabel. Lakukan hal sama seperti
+% di atas.
+% 
+% 1.
+%% latex: f(x)=x^3+4x^2+4x+2
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-003.png
+% // latex: f(x)=x^3+4x^2+4x+2
+>function f(x) &= (x^3+4*x^2+4*x+2) // fungsi simbolik
+
+                          3      2
+                         x  + 4 x  + 4 x + 2
+
+>function f(x) := (x^3+4*x^2+4*x+2) // fungsi numerik
+>f(1), f(4), f(8)
+11
+146
+802
+>f(-2:2)
+[2,  1,  2,  11,  34]
+>aspect(1.5); plot2d("f(x)",-2,2):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-004.png
+% 
+% 2.
+% 
+% latex: h(x)= cos(x)-4
+>function h(x) &= cos(x)-4
+
+                              cos(x) - 4
+
+>function h(x) := cos(x)-4
+>h(pi), h(pi/2)
+-5
+-4
+>h(pi/2:2pi)
+[-4,  -4.84147,  -4.9093,  -4.14112,  -3.2432]
+>aspect(1.5); plot2d("h(x)",pi,2pi):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-005.png
+% 
+% 3. Mendefinisikan fungsi
+%% latex: p(x) = \begin{cases} x^2-1 & x>0 \\ x^2 & x\le 0. \end{cases}
+>function map p(x)
+$   if x>0 then return x^3
+$   else return x^2
+$   endif;
+$endfunction
+>p(3)
+27
+>p(-2)
+4
+>p(-2:2)
+[4,  1,  0,  1,  8]
+>pmap(-2:2)
+[4,  1,  0,  1,  8]
+>aspect(1.5); plot2d("p(x)",-5,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-006.png
+% 
+% 4
+% 
+% latex: k(x)= \frac{1}{x-2}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-007.png
+% // latex: k(x)= \frac{1}{x-2}
+>function k(x) := 1/(x-2)
+>k(5), k(7), k(3)
+0.333333333333
+0.2
+1
+>k(f(5))
+0.00408163265306
+>k(3:15)
+[1,  0.5,  0.333333,  0.25,  0.2,  0.166667,  0.142857,  0.125,
+0.111111,  0.1,  0.0909091,  0.0833333,  0.0769231]
+>aspect(1.5); plot2d("k(x)",-5,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-008.png
+% 
+% 5.
+%% latex: g(x)=\sqrt{x-5}
+>function g(x) := sqrt(x-5)
+>g(14), g(105), g(30)
+3
+10
+5
+>f(g(5)) // komposisi fungsi
+2
+>g(f(5))
+15.5563491861
+>g(5:10)
+[0,  1,  1.41421,  1.73205,  2,  2.23607]
+>gmap(5:10)
+[0,  1,  1.41421,  1.73205,  2,  2.23607]
+>aspect(2); plot2d("g(x)",-10,10):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-009.png
+>
+% * Menghitung Limit
+% 
+% Perhitungan limit pada EMT dapat dilakukan dengan menggunakan fungsi
+% Maxima, yakni "limit". Fungsi "limit" dapat digunakan untuk menghitung
+% limit fungsi dalam bentuk ekspresi maupun fungsi yang sudah
+% didefinisikan sebelumnya. Nilai limit dapat dihitung pada sebarang
+% nilai atau pada tak hingga (-inf, minf, dan inf). Limit kiri dan limit
+% kanan juga dapat dihitung, dengan cara memberi opsi "plus" atau
+% "minus". Hasil limit dapat berupa nilai, "und' (tak definisi), "ind"
+% (tak tentu namun terbatas), "infinity" (kompleks tak hingga).
+% 
+% Perhatikan beberapa contoh berikut. Perhatikan cara menampilkan
+% perhitungan secara lengkap, tidak hanya menampilkan hasilnya saja.
+>$showev('limit(1/(2*x-1),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-010.png
+% // latex: \lim_{x\rightarrow 0}{\frac{1}{2\,x-1}}=-1
+>$showev('limit((x^2-3*x-10)/(x-5),x,5))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-011.png
+% // latex: \lim_{x\rightarrow 5}{\frac{x^2-3\,x-10}{x-5}}=7
+>$showev('limit(sin(x)/x,x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-012.png
+% // latex: \lim_{x\rightarrow 0}{\frac{\sin x}{x}}=1
+>plot2d("sin(x)/x",-pi,pi):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-013.png
+>$showev('limit(sin(x^3)/x,x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-014.png
+% // latex: \lim_{x\rightarrow 0}{\frac{\sin x^3}{x}}=0
+>$showev('limit(log(x), x, minf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-015.png
+% // latex: \lim_{x\rightarrow  -\infty }{\log x}={\it infinity}
+>$showev('limit((-2)^x,x, inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-016.png
+% // latex: \lim_{x\rightarrow \infty }{\left(-2\right)^{x}}={\it infinity}
+>$showev('limit(t-sqrt(2-t),t,2,minus))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-017.png
+% // latex: \lim_{t\uparrow 2}{t-\sqrt{2-t}}=2
+>$showev('limit(t-sqrt(2-t),t,5,plus)) // Perhatikan hasilnya
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-018.png
+% // latex: \lim_{t\downarrow 5}{t-\sqrt{2-t}}=5-\sqrt{3}\,i
+>plot2d("x-sqrt(2-x)",-2,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-019.png
+>$showev('limit((x^2-9)/(2*x^2-5*x-3),x,3))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-020.png
+% // latex: \lim_{x\rightarrow 3}{\frac{x^2-9}{2\,x^2-5\,x-3}}=\frac{6}{7}
+>$showev('limit((1-cos(x))/x,x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-021.png
+% // latex: \lim_{x\rightarrow 0}{\frac{1-\cos x}{x}}=0
+>$showev('limit((x^2+abs(x))/(x^2-abs(x)),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-022.png
+% // latex: \lim_{x\rightarrow 0}{\frac{\left| x\right| +x^2}{x^2-\left| x  \right| }}=-1
+>$showev('limit((1+1/x)^x,x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-023.png
+% // latex: \lim_{x\rightarrow \infty }{\left(\frac{1}{x}+1\right)^{x}}=e
+>$showev('limit((1+k/x)^x,x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-024.png
+% // latex: \lim_{x\rightarrow \infty }{\left(\frac{k}{x}+1\right)^{x}}=e^{k}
+>$showev('limit((1+x)^(1/x),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-025.png
+% // latex: \lim_{x\rightarrow 0}{\left(x+1\right)^{\frac{1}{x}}}=e
+>$showev('limit((x/(x+k))^x,x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-026.png
+% // latex: \lim_{x\rightarrow \infty }{\left(\frac{x}{x+k}\right)^{x}}=e^ {- k   }
+>
+>$showev('limit(sin(1/x),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-027.png
+% // latex: \lim_{x\rightarrow 0}{\sin \left(\frac{1}{x}\right)}={\it ind}
+>$showev('limit(sin(1/x),x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-028.png
+% // latex: \lim_{x\rightarrow \infty }{\sin \left(\frac{1}{x}\right)}=0
+>plot2d("sin(1/x)",-5,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-029.png
+% * Latihan
+% 
+% Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+% fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+% definisikan di EMT pada baris-baris perintah berikut (jika perlu
+% tambahkan lagi). Untuk setiap fungsi, hitung nilai limit fungsi
+% tersebut di beberapa nilai dan di tak hingga. Gambar grafik fungsi
+% tersebut untuk mengkonfirmasi nilai-nilai limit tersebut.
+% 
+% 
+% 1.
+%% latex: \lim_{x\to 0} (x+1)^{\frac{2}{x}}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-030.png
+% // latex: \lim_{x\to 0} (x+1)^{\frac{2}{x}}
+>$showev('limit((x+1)^(3/x),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-031.png
+% // latex: \lim_{x\rightarrow 0}{\left(x+1\right)^{\frac{3}{x}}}=e^3
+>plot2d("(x+1)^(3/x)",-5,5):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-032.png
+% 2. Hitung nilai limit berikut:
+%% latex: \lim \limits_{x \to 3} \frac{x^4-18x^2+81}{(x-3)^2}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-033.png
+% // latex: \lim \limits_{x \to 3} \frac{x^4-18x^2+81}{(x-3)^2}
+%% latex: \lim \limits_{x \to \infty} \frac{x^4-18x^2+81}{(x-3)^2}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-034.png
+% // latex: \lim \limits_{x \to \infty} \frac{x^4-18x^2+81}{(x-3)^2}
+>$showev('limit((x^4-18*x^2+81)/(x-3)^2,x,3))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-035.png
+% // latex: \lim_{x\rightarrow 3}{\frac{x^4-18\,x^2+81}{\left(x-3\right)^2}}=36
+>$showev('limit((x^4-18*x^2+81)/(x-3)^2,x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-036.png
+% // latex: \lim_{x\rightarrow \infty }{\frac{x^4-18\,x^2+81}{\left(x-3\right)^  2}}=\infty 
+>plot2d("(x^4-18*x^2+81)/(x-3)^2",-4,4):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-037.png
+% 
+% 
+% 3.
+%% latex: \lim_{x\to 0} x^2 sin\frac{\pi}{x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-038.png
+% // latex: \lim_{x\to 0} x^2 sin\frac{\pi}{x}
+>$showev('limit(x^4*sin(pi/x),x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-039.png
+% // latex: \lim_{x\rightarrow 0}{\sin \left(\frac{\pi}{x}\right)\,x^4}=0
+>plot2d("x^4*sin(pi/x)",-pi,pi):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-040.png
+% 
+% 3. Andaikan
+%% latex: f(x)=\frac{ln\ x}{1+(ln\ x)^2}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-041.png
+% // latex: f(x)=\frac{ln\ x}{1+(ln\ x)^2}
+%% untuk x dalam (0,inf).
+%% Carilah:
+%% latex: \lim \limits_{x \to 0^-} f(x)\ dan \lim \limits_{x \to \infty} f(x)
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-042.png
+% // latex: \lim \limits_{x \to 0^-} f(x)\ dan \lim \limits_{x \to \infty} f(x)
+>$showev('limit(ln(x)/(1+(ln(x)^2)),x,0,plus))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-043.png
+% // latex: \lim_{x\downarrow 0}{\frac{\log x}{\log ^2x+1}}=0
+>$showev('limit(ln(x)/(1+(ln(x)^2)),x,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-044.png
+% // latex: \lim_{x\rightarrow \infty }{\frac{\log x}{\log ^2x+1}}=0
+>plot2d("ln(x)/(1+(ln(x)^2))",-1,1):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-045.png
+% 
+% 4.
+%% latex: \lim_{x\to 1^-} \frac{1}{1-x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-046.png
+% // latex: \lim_{x\to 1^-} \frac{1}{1-x}
+%% latex: \lim_{x\to 1^+} \frac{1}{1-x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-047.png
+% // latex: \lim_{x\to 1^+} \frac{1}{1-x}
+>$showev('limit(1/(1-x),x,1,minus))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-048.png
+% // latex: \lim_{x\uparrow 1}{\frac{1}{1-x}}=\infty 
+>$showev('limit(1/(1-x),x,1,plus))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-049.png
+% // latex: \lim_{x\downarrow 1}{\frac{1}{1-x}}= -\infty 
+% 
+% 5.
+%% latex: \lim_{x\to 0} \frac{tan(4x)}{x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-050.png
+% // latex: \lim_{x\to 0} \frac{tan(4x)}{x}
+>$showev('limit(tan(4*x)/x,x,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-051.png
+% // latex: \lim_{x\rightarrow 0}{\frac{\tan \left(4\,x\right)}{x}}=4
+>plot2d("tan(x)/x",-pi,pi):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-052.png
+>
+% * Turunan Fungsi
+% 
+% Definisi turunan:
+% 
+% latex: f'(x) = \lim_{h\to 0} \frac{f(x+h)-f(x)}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-053.png
+% // latex: f'(x) = \lim_{h\to 0} \frac{f(x+h)-f(x)}{h}
+% 
+% Berikut adalah contoh-contoh menentukan turunan fungsi dengan
+% menggunakan definisi turunan (limit).
+>$showev('limit(((x+h)^n-x^n)/h,h,0)) // turunan x^n
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-054.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{n}-x^{n}}{h}}=n\,x^{n  -1}
+% Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+% limit tersebut benar, sehingga benar turunan fungsinya benar.  Tulis
+% penjelasan Anda di komentar ini.
+% 
+% Sebagai petunjuk, ekspansikan (x+h)^n dengan menggunakan teorema
+% binomial.
+% 
+% Bukti:
+%% latex: f'(x)=\lim_{h\to 0} \frac{(x+h)^n-x^n}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-055.png
+% // latex: f'(x)=\lim_{h\to 0} \frac{(x+h)^n-x^n}{h}
+%% latex: =\lim_{h\to 0} \frac{x^n+nx^{n-1}h+\frac{n(n-1)}{2}x^{n-2}h^2+...+nxh^{n-1}+h^n-x^n}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-056.png
+% // latex: =\lim_{h\to 0} \frac{x^n+nx^{n-1}h+\frac{n(n-1)}{2}x^{n-2}h^2+...+nxh^{n-1}+h^n-x^n}{h}
+%% latex: =\lim_{h\to 0} \frac{h\left [nx^{n-1}+\frac{n(n-1)}{2}x^{n-2}h+...+nxh^{n-2}+h^{n-1}\right ]}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-057.png
+% // latex: =\lim_{h\to 0} \frac{h\left [nx^{n-1}+\frac{n(n-1)}{2}x^{n-2}h+...+nxh^{n-2}+h^{n-1}\right ]}{h}
+%% Di dalam tanda kurung siku, semua suku kecuali yang pertama mempunyai
+% h sebagai faktor, sehingga masing-masing suku ini mempunyai limit nol
+% bila h mendekati nol. Jadi
+%% latex: f'(x)=nx^{n-1}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-058.png
+% // latex: f'(x)=nx^{n-1}
+>$showev('limit((sin(x+h)-sin(x))/h,h,0)) // turunan sin(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-059.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\sin \left(x+h\right)-\sin x}{h}}=\cos   x
+% Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+% limit tersebut
+%% benar, sehingga benar turunan fungsinya benar.  Tulis penjelasan Anda
+% di komentar ini.
+% 
+% Sebagai petunjuk, ekspansikan sin(x+h) dengan menggunakan rumus jumlah
+% dua sudut.
+% 
+% Bukti:
+%% latex: D_x(sin\ x)=\lim_{h\to 0} \frac{sin(x+h)-sin\ x}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-060.png
+% // latex: D_x(sin\ x)=\lim_{h\to 0} \frac{sin(x+h)-sin\ x}{h}
+%% latex: =\lim_{h\to 0} \frac{sin\ x\ cos\ h+cos\ x\ sin\ h-sin\ x}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-061.png
+% // latex: =\lim_{h\to 0} \frac{sin\ x\ cos\ h+cos\ x\ sin\ h-sin\ x}{h}
+%% latex: =\lim_{h\to 0} (-sin\ x\frac{1-cos\ h}{h}+cos\ x\frac{sin\ h}{h})
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-062.png
+% // latex: =\lim_{h\to 0} (-sin\ x\frac{1-cos\ h}{h}+cos\ x\frac{sin\ h}{h})
+%% latex: =(-sin\ x)\left [\lim_{h\to 0} \frac{1-cos\ h}{h} \right ]+(cos\ x)\left [\lim_{h\to 0} \frac{sin\ h}{h}\right ]
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-063.png
+% // latex: =(-sin\ x)\left [\lim_{h\to 0} \frac{1-cos\ h}{h} \right ]+(cos\ x)\left [\lim_{h\to 0} \frac{sin\ h}{h}\right ]
+%% latex: =(-sin\ x)\cdot 0+(cos\ x)\cdot 1
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-064.png
+% // latex: =(-sin\ x)\cdot 0+(cos\ x)\cdot 1
+%% latex: =cos\ x
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-065.png
+% // latex: =cos\ x
+%% Jadi, terbukti bahwa
+%% latex: D_x(sin\ x)=cos\ x
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-066.png
+% // latex: D_x(sin\ x)=cos\ x
+>$showev('limit((log(x+h)-log(x))/h,h,0)) // turunan log(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-067.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\log \left(x+h\right)-\log x}{h}}=  \frac{1}{x}
+% Mengapa hasilnya seperti itu? Tuliskan atau tunjukkan bahwa hasil
+% limit tersebut
+%% benar, sehingga benar turunan fungsinya benar.  Tulis penjelasan Anda
+% di komentar ini.
+% 
+% Sebagai petunjuk, gunakan sifat-sifat logaritma dan hasil limit pada
+% bagian sebelumnya di atas.
+% 
+% Bukti:
+%% latex: D_xlog(x)=\lim_{h\to 0} \frac{log(x+h)-log\ x}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-068.png
+% // latex: D_xlog(x)=\lim_{h\to 0} \frac{log(x+h)-log\ x}{h}
+%% latex: =\lim_{h\to 0} \frac{log\left (\frac{x+h}{x}\right )}{h}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-069.png
+% // latex: =\lim_{h\to 0} \frac{log\left (\frac{x+h}{x}\right )}{h}
+%% latex: =\lim_{h\to 0} \frac{1}{h}\left (log\left (1+\frac{h}{x}\right )\right )
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-070.png
+% // latex: =\lim_{h\to 0} \frac{1}{h}\left (log\left (1+\frac{h}{x}\right )\right )
+%% latex: =\lim_{h\to 0} \left (log\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-071.png
+% // latex: =\lim_{h\to 0} \left (log\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+%% latex: = log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-072.png
+% // latex: = log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )
+%% Dengan
+%% latex: \lim_{x\to 0} (1+x)^{\frac{1}{x}}=e
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-073.png
+% // latex: \lim_{x\to 0} (1+x)^{\frac{1}{x}}=e
+%% maka
+%% latex: log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )^{\frac{h}{x}\cdot \frac{1}{h}}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-074.png
+% // latex: log\left (\lim_{h\to 0}\left (1+\frac{h}{x}\right )^{\frac{1}{h}}\right )^{\frac{h}{x}\cdot \frac{1}{h}}
+%% latex: = log\ e^{\frac{1}{x}}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-075.png
+% // latex: = log\ e^{\frac{1}{x}}
+%% latex: =\frac{1}{x}log\ e
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-076.png
+% // latex: =\frac{1}{x}log\ e
+%% latex: =\frac{1}{x}\cdot 1
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-077.png
+% // latex: =\frac{1}{x}\cdot 1
+%% latex: =\frac{1}{x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-078.png
+% // latex: =\frac{1}{x}
+%% Jadi, terbukti bahwa
+%% latex: D_xlog(x)=\frac{1}{x}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-079.png
+% // latex: D_xlog(x)=\frac{1}{x}
+>$showev('limit((1/(x+h)-1/x)/h,h,0)) // turunan 1/x
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-080.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\frac{1}{x+h}-\frac{1}{x}}{h}}=-\frac{1  }{x^2}
+>$showev('limit((E^(x+h)-E^x)/h,h,0)) // turunan f(x)=e^x
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Maxima is asking
+Acceptable answers are: yes, y, Y, no, n, N, unknown, uk
+Is x an integer?
+
+Use assume!
+Error in:
+ $showev('limit((E^(x+h)-E^x)/h,h,0)) // turunan f(x)=e^x ...
+                                     ^
+% Maxima bermasalah dengan limit:
+% 
+% latex: \lim_{h\to 0}\frac{e^{x+h}-e^x}{h}.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-081.png
+% // latex: \lim_{h\to 0}\frac{e^{x+h}-e^x}{h}.
+% 
+% Oleh karena itu diperlukan trik khusus agar hasilnya benar.
+>$showev('limit((E^h-1)/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-082.png
+% // latex: \lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}=1
+>$factor(E^(x+h)-E^x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-083.png
+% // latex: \left(e^{h}-1\right)\,e^{x}
+>$showev('limit(factor((E^(x+h)-E^x)/h),h,0)) // turunan f(x)=e^x
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-084.png
+% // latex: \left(\lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}\right)\,e^{x}=e^{x}
+>function f(x) &= x^x
+
+                                   x
+                                  x
+
+>$showev('limit((f(x+h)-f(x))/h,h,0)) // turunan f(x)=x^x
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-085.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{x+h}-x^{x}}{h}}=  {\it infinity}
+% Di sini Maxima juga bermasalah terkait limit:
+% 
+% latex: \lim_{h\to 0} \frac{(x+h)^{x+h}-x^x}{h}.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-086.png
+% // latex: \lim_{h\to 0} \frac{(x+h)^{x+h}-x^x}{h}.
+% 
+% Dalam hal ini diperlukan asumsi nilai x.
+>&assume(x>0); $showev('limit((f(x+h)-f(x))/h,h,0)) // turunan f(x)=x^x
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-087.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\left(x+h\right)^{x+h}-x^{x}}{h}}=x^{x}  \,\left(\log x+1\right)
+>&forget(x>0) // jangan lupa, lupakan asumsi untuk kembali ke semula
+
+                               [x > 0]
+
+>&forget(x<0)
+
+                               [x < 0]
+
+>&facts()
+
+                                  []
+
+>$showev('limit((asin(x+h)-asin(x))/h,h,0)) // turunan arcsin(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-088.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\arcsin \left(x+h\right)-\arcsin x}{h}}=  \frac{1}{\sqrt{1-x^2}}
+>$showev('limit((tan(x+h)-tan(x))/h,h,0)) // turunan tan(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-089.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\tan \left(x+h\right)-\tan x}{h}}=  \frac{1}{\cos ^2x}
+>function f(x) &= sinh(x) // definisikan f(x)=sinh(x)
+
+                               sinh(x)
+
+>function df(x) &= limit((f(x+h)-f(x))/h,h,0); $df(x) // df(x) = f'(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-090.png
+% // latex: \frac{e^ {- x }\,\left(e^{2\,x}+1\right)}{2}
+% Hasilnya adalah cosh(x), karena
+% 
+% latex: \frac{e^x+e^{-x}}{2}=\cosh(x).
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-091.png
+% // latex: \frac{e^x+e^{-x}}{2}=\cosh(x).
+>
+>plot2d(["f(x)","df(x)"],-pi,pi,color=[blue,red]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-092.png
+>
+% * Latihan
+% 
+% Bukalah buku Kalkulus. Cari dan pilih beberapa (paling sedikit 5
+% fungsi berbeda tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian
+% definisikan di EMT pada baris-baris perintah berikut (jika perlu
+% tambahkan lagi). Untuk setiap fungsi, tentukan turunannya dengan
+% menggunakan definisi turunan (limit), seperti contoh-contoh tersebut.
+% Gambar grafik fungsi asli dan fungsi turunannya pada sumbu koordinat
+% yang sama.
+% 
+% 
+% 1. Gunakan definisi turunan (limit) untuk mencari turunan di x.
+%% latex: F(x)=\frac{5}{x^2+1}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-093.png
+% // latex: F(x)=\frac{5}{x^2+1}
+>function F(x) &= 5/(x^2+1)
+
+                                  5
+                                ------
+                                 2
+                                x  + 1
+
+>$showev('limit(((5/((x+h)^2+1))-(5/(x^2+1)))/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-094.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\frac{5}{\left(x+h\right)^2+1}-\frac{5  }{x^2+1}}{h}}=-\frac{10\,x}{x^4+2\,x^2+1}
+>plot2d(["F(x)","-(10*x)/(x^4+2*x^2+1)"],color=[blue,red]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-095.png
+% 
+% 2.
+%% latex: j(x)=sin 2x^3
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-096.png
+% // latex: j(x)=sin 2x^3
+>function j(x)&= sin(2*x)^3
+
+                                 3
+                              sin (2 x)
+
+>$showev('limit((j(x+h)-j(x))/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-097.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\sin ^3\left(2\,\left(x+h\right)\right)  -\sin ^3\left(2\,x\right)}{h}}=6\,\cos \left(2\,x\right)\,\sin ^2  \left(2\,x\right)
+>function dj(x) &= limit((j(x+h)-j(x))/h,h,0); $dj(x) // dj(x) =j'(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-098.png
+% // latex: 6\,\cos \left(2\,x\right)\,\sin ^2\left(2\,x\right)
+>plot2d(["j(x)","dj(x)"],-pi,pi,color=[green,yellow]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-099.png
+% 
+% 2.
+%% latex: g(x)=\frac{1}{3x^3+1}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-100.png
+% // latex: g(x)=\frac{1}{3x^3+1}
+>function g(x):=1/(3*x^3+1)
+>$showev('limit(((1/(3*(x+h)^3+1))-(1/(3*x^3+1)))/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-101.png
+% // latex: \lim_{h\rightarrow 0}{\frac{\frac{1}{3\,\left(x+h\right)^3+1}-  \frac{1}{3\,x^3+1}}{h}}=-\frac{9\,x^2}{9\,x^6+6\,x^3+1}
+>function dg(x) &= limit(((1/(3*(x+h)^3+1))-(1/(3*x^3+1)))/h,h,0);$df(x) // df(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-102.png
+% // latex: \frac{e^ {- x }\,\left(e^{2\,x}+1\right)}{2}
+>plot2d(["g(x)","g(x)"],-pi,pi,color=[blue,red]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-103.png
+% 3. Carilah Dx dari fungsi berikut.
+%% latex: r(x)=\frac{1}{2x}+2x
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-104.png
+% // latex: r(x)=\frac{1}{2x}+2x
+>function r(x) &= 3*x^3+9
+
+                                  3
+                               3 x  + 9
+
+>$showev('limit(((3*(x+h)^3+9)-(3*x^3+9))/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-105.png
+% // latex: \lim_{h\rightarrow 0}{\frac{3\,\left(x+h\right)^3-3\,x^3}{h}}=9\,x^  2
+>plot2d(["r(x)","9*x^2"],-1,1,color=[green,red]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-106.png
+% 4. Carilah turunan dari:
+%% latex: p(x)=x^3e^x
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-107.png
+% // latex: p(x)=x^3e^x
+>function p(x)&= x^3*E^x
+
+                                 3  x
+                                x  E
+
+>$showev('limit(((x+h)^3*E^(x+h)-(x^3*E^x))/h,h,0))
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Answering "Is x an integer?" with "integer"
+Maxima is asking
+Acceptable answers are: yes, y, Y, no, n, N, unknown, uk
+Is x an integer?
+
+Use assume!
+Error in:
+... showev('limit(((x+h)^3*E^(x+h)-(x^3*E^x))/h,h,0)) ...
+                                                     ^
+>$showev('limit((E^h-1)/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-108.png
+% // latex: \lim_{h\rightarrow 0}{\frac{e^{h}-1}{h}}=1
+>$factor((x+h)^3*E^(x+h)-(x^3*E^x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-109.png
+% // latex: \left(e^{h}\,x^3-x^3+3\,h\,e^{h}\,x^2+3\,h^2\,e^{h}\,x+h^3\,e^{h}  \right)\,e^{x}
+>$showev('limit(factor(((x+h)^3*E^(x+h)-(x^3*E^x))/h),h,0)) // turunan f(x)=x^3*e^x
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-110.png
+% // latex: e^{x}\,\left(\lim_{h\rightarrow 0}{\frac{e^{h}\,x^3-x^3+3\,h\,e^{h}  \,x^2+3\,h^2\,e^{h}\,x+h^3\,e^{h}}{h}}\right)=\left(x^3+3\,x^2  \right)\,e^{x}
+>plot2d(["p(x)","x^2*E^x*(x+3)"],color=[yellow,red]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-111.png
+% 5. Carilah turunan dari:
+%% latex: g(x)=3sin\ x+cos\ x
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-112.png
+% // latex: g(x)=3sin\ x+cos\ x
+>function g(x) &= 3*sin(x)+cos(x)
+
+                          3 sin(x) + cos(x)
+
+>$showev('limit((3*sin(x+h)+cos(x+h)-(3*sin(x)+cos(x)))/h,h,0))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-113.png
+% // latex: \lim_{h\rightarrow 0}{\frac{3\,\sin \left(x+h\right)+\cos \left(x+h  \right)-3\,\sin x-\cos x}{h}}=3\,\cos x-\sin x
+>plot2d(["g(x)","3*cos(x)-sin(x)"],color=[orange,yellow]):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-114.png
+>
+% * Integral
+% 
+% EMT dapat digunakan untuk menghitung integral, baik integral tak tentu
+% maupun integral tentu. Untuk integral tak tentu (simbolik) sudah tentu
+% EMT menggunakan Maxima, sedangkan untuk perhitungan integral tentu EMT
+% sudah menyediakan beberapa fungsi yang mengimplementasikan algoritma
+% kuadratur (perhitungan integral tentu menggunakan metode numerik).
+% 
+% Pada notebook ini akan ditunjukkan perhitungan integral tentu dengan
+% menggunakan Teorema Dasar Kalkulus:
+% 
+% latex: \int_a^b f(x)\ dx = F(b)-F(a), \quad \text{ dengan  } F'(x) = f(x).
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-115.png
+% // latex: \int_a^b f(x)\ dx = F(b)-F(a), \quad \text{ dengan  } F'(x) = f(x).
+% 
+% Fungsi untuk menentukan integral adalah integrate. Fungsi ini dapat
+% digunakan untuk menentukan, baik integral tentu maupun tak tentu (jika
+% fungsinya memiliki antiderivatif). Untuk perhitungan integral tentu
+% fungsi integrate menggunakan metode numerik (kecuali fungsinya tidak
+% integrabel, kita tidak akan menggunakan metode ini).
+>$showev('integrate(x^n,x))
+Answering "Is n equal to -1?" with "no"
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-116.png
+% // latex: \int {x^{n}}{\;dx}=\frac{x^{n+1}}{n+1}
+>$showev('integrate(1/(1+x),x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-117.png
+% // latex: \int {\frac{1}{x+1}}{\;dx}=\log \left(x+1\right)
+>$showev('integrate(1/(1+x^2),x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-118.png
+% // latex: \int {\frac{1}{x^2+1}}{\;dx}=\arctan x
+>$showev('integrate(1/sqrt(1-x^2),x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-119.png
+% // latex: \int {\frac{1}{\sqrt{1-x^2}}}{\;dx}=\arcsin x
+>$showev('integrate(sin(x),x,0,pi))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-120.png
+% // latex: \int_{0}^{\pi}{\sin x\;dx}=2
+>$showev('integrate(sin(x),x,a,b))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-121.png
+% // latex: \int_{a}^{b}{\sin x\;dx}=\cos a-\cos b
+>$showev('integrate(x^n,x,a,b))
+Answering "Is n positive, negative or zero?" with "positive"
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-122.png
+% // latex: \int_{a}^{b}{x^{n}\;dx}=\frac{b^{n+1}}{n+1}-\frac{a^{n+1}}{n+1}
+>$showev('integrate(x^2*sqrt(2*x+1),x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-123.png
+% // latex: \int {x^2\,\sqrt{2\,x+1}}{\;dx}=\frac{\left(2\,x+1\right)^{\frac{7  }{2}}}{28}-\frac{\left(2\,x+1\right)^{\frac{5}{2}}}{10}+\frac{\left(  2\,x+1\right)^{\frac{3}{2}}}{12}
+>$showev('integrate(x^2*sqrt(2*x+1),x,0,2))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-124.png
+% // latex: \int_{0}^{2}{x^2\,\sqrt{2\,x+1}\;dx}=\frac{2\,5^{\frac{5}{2}}}{21}-  \frac{2}{105}
+>$ratsimp(%)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-125.png
+% // latex: \int_{0}^{2}{x^2\,\sqrt{2\,x+1}\;dx}=\frac{2\,5^{\frac{7}{2}}-2}{  105}
+>$showev('integrate((sin(sqrt(x)+a)*E^sqrt(x))/sqrt(x),x,0,pi^2))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-126.png
+% // latex: \int_{0}^{\pi^2}{\frac{\sin \left(\sqrt{x}+a\right)\,e^{\sqrt{x}}}{  \sqrt{x}}\;dx}=\left(-e^{\pi}-1\right)\,\sin a+\left(e^{\pi}+1  \right)\,\cos a
+>$factor(%)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-127.png
+% // latex: \int_{0}^{\pi^2}{\frac{\sin \left(\sqrt{x}+a\right)\,e^{\sqrt{x}}}{  \sqrt{x}}\;dx}=\left(-e^{\pi}-1\right)\,\left(\sin a-\cos a\right)
+>function map f(x) &= E^(-x^2)
+
+                                    2
+                                 - x
+                                E
+
+>$showev('integrate(f(x),x))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-128.png
+% // latex: \int {e^ {- x^2 }}{\;dx}=\frac{\sqrt{\pi}\,\mathrm{erf}\left(x  \right)}{2}
+% Fungsi f tidak memiliki antiturunan, integralnya masih memuat integral
+% lain.
+% 
+% latex: erf(x) = \int \frac{e^{-x^2}}{\sqrt{\pi}} \ dx.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-129.png
+% // latex: erf(x) = \int \frac{e^{-x^2}}{\sqrt{\pi}} \ dx.
+% 
+% Kita tidak dapat menggunakan teorema Dasar kalkulus untuk menghitung
+% integral tentu fungsi tersebut jika semua batasnya berhingga. Dalam
+% hal ini dapat digunakan metode numerik (rumus kuadratur).
+% 
+% Misalkan kita akan menghitung:
+% 
+% maxima: 'integrate(f(x),x,0,pi)
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-130.png
+% // latex: \int_{0}^{\pi}{e^ {- x^2 }\;dx}
+>x=0:0.1:pi-0.1; plot2d(x,f(x+0.1),>bar); plot2d("f(x)",0,pi,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-131.png
+% Integral tentu
+% 
+% maxima: 'integrate(f(x),x,0,pi)
+% 
+% dapat dihampiri dengan jumlah luas persegi-persegi panjang di bawah kurva y=f(x)
+% tersebut. Langkah-langkahnya adalah sebagai berikut.
+>t &= makelist(a,a,0,pi-0.1,0.1); // t sebagai list untuk menyimpan nilai-nilai x
+>fx &= makelist(f(t[i]+0.1),i,1,length(t)); // simpan nilai-nilai f(x)
+>// jangan menggunakan x sebagai list, kecuali Anda pakar Maxima!
+% Hasilnya adalah:
+% 
+% maxima: 'integrate(f(x),x,0,pi) = 0.1*sum(fx[i],i,1,length(fx))
+% 
+% Jumlah tersebut diperoleh dari hasil kali lebar sub-subinterval (=0.1) dan jumlah
+% nilai-nilai f(x) untuk x = 0.1, 0.2, 0.3, ..., 3.2.
+>0.1*sum(f(x+0.1)) // cek langsung dengan perhitungan numerik EMT
+0.836219610253
+% Untuk mendapatkan nilai integral tentu yang mendekati nilai
+% sebenarnya, lebar sub-intervalnya dapat diperkecil lagi, sehingga
+% daerah di bawah kurva tertutup semuanya, misalnya dapat digunakan
+% lebar subinterval 0.001. (Silakan dicoba!)
+%% ---
+%% Mencoba dengan menggunakan sub-interval 0.001
+>x=0:0.001:pi-0.001; plot2d(x,f(x+0.001),>bar); plot2d("f(x)",0,pi,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-132.png
+>t &= makelist(a,a,0,pi-0.001,0.1); // t sebagai list untuk menyimpan nilai-nilai x
+>fx &= makelist(f(t[i]+0.001),i,1,length(t)); // simpan nilai-nilai f(x)
+% Hasilnya adalah:
+% 
+% maxima: 'integrate(f(x),x,0,pi) = 0.1*sum(fx[i],i,1,length(fx))
+% 
+% Jumlah tersebut diperoleh dari hasil kali lebar sub-subinterval
+% (=0.001) dan jumlah nilai-nilai f(x) untuk x = 0.001, 0.002, 0.003,
+% ..., 3.2.
+>0.001*sum(f(x+0.001)) // cek langsung dengan perhitungan numerik EMT
+0.885719054393
+% ---
+%% Meskipun Maxima tidak dapat menghitung integral tentu fungsi tersebut
+% untuk batas-batas yang berhingga, namun integral tersebut dapat
+% dihitung secara eksak jika batas-batasnya tak hingga. Ini adalah salah
+% satu keajaiban di dalam matematika, yang terbatas tidak dapat dihitung
+% secara eksak, namun yang tak hingga malah dapat dihitung secara eksak.
+>$showev('integrate(f(x),x,0,inf))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-133.png
+% // latex: \int_{0}^{\infty }{e^ {- x^2 }\;dx}=\frac{\sqrt{\pi}}{2}
+% Berikut adalah contoh lain fungsi yang tidak memiliki antiderivatif, sehingga
+% integral tentunya hanya dapat dihitung dengan metode numerik.
+>function f(x) &= x^x
+
+                                   x
+                                  x
+
+>$showev('integrate(f(x),x,0,1))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-134.png
+% // latex: \int_{0}^{1}{x^{x}\;dx}=\int_{0}^{1}{x^{x}\;dx}
+>x=0:0.1:1-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",0,1,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-135.png
+% Maxima gagal menghitung integral tentu tersebut secara langsung menggunakan perintah
+% integrate. Berikut kita lakukan seperti contoh sebelumnya untuk mendapat hasil atau
+% pendekatan nilai integral tentu tersebut.
+>t &= makelist(a,a,0,1-0.01,0.01);
+>fx &= makelist(f(t[i]+0.01),i,1,length(t));
+% maxima: 'integrate(f(x),x,0,1) = 0.01*sum(fx[i],i,1,length(fx))
+% 
+% Apakah hasil tersebut cukup baik? perhatikan gambarnya.
+>
+% * Latihan
+% 
+% - Bukalah buku Kalkulus.
+%% - Cari dan pilih beberapa (paling sedikit 5 fungsi berbeda
+% tipe/bentuk/jenis) fungsi dari buku tersebut, kemudian definisikan di
+% EMT pada baris-baris perintah berikut (jika perlu tambahkan lagi).
+%% - Untuk setiap fungsi, tentukan anti turunannya (jika ada), hitunglah
+% integral tentu dengan batas-batas yang menarik (Anda tentukan
+% sendiri), seperti contoh-contoh tersebut.
+%% - Lakukan hal yang sama untuk fungsi-fungsi yang tidak dapat
+% diintegralkan (cari sedikitnya 3 fungsi).
+%% - Gambar grafik fungsi dan daerah integrasinya pada sumbu koordinat
+% yang sama.
+%% - Gunakan integral tentu untuk mencari luas daerah yang dibatasi oleh
+% dua kurva yang berpotongan di dua titik. (Cari dan gambar kedua kurva
+% dan arsir (warnai) daerah yang dibatasi oleh keduanya.)
+%% - Gunakan integral tentu untuk menghitung volume benda putar kurva y=
+% f(x) yang diputar mengelilingi sumbu x dari x=a sampai x=b, yakni
+% 
+% latex: V = \int_a^b \pi (f(x)^2\ dx.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-136.png
+% // latex: V = \int_a^b \pi (f(x)^2\ dx.
+% 
+% (Pilih fungsinya dan gambar kurva dan benda putar yang dihasilkan.
+% Anda dapat mencari contoh-contoh bagaimana cara menggambar benda hasil
+% perputaran suatu kurva.)
+%% - Gunakan integral tentu untuk menghitung panjang kurva y=f(x) dari
+% x=a sampai x=b dengan menggunakan rumus:
+% 
+% latex: S = \int_a^b \sqrt{1+(f'(x))^2} \ dx.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-137.png
+% // latex: S = \int_a^b \sqrt{1+(f'(x))^2} \ dx.
+% 
+% (Pilih fungsi dan gambar kurvanya.)
+% 
+% ---
+%% 1. Hitunglah integral dari fungsi berikut:
+%% latex: \int (3x^2-2x+3)\ dx\ dan\ \int_{-1}^{2} (3x^2-2x+3)\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-138.png
+% // latex: \int (3x^2-2x+3)\ dx\ dan\ \int_{-1}^{2} (3x^2-2x+3)\ dx
+>function f(x) &= 3*x^2-2*x+3
+
+                               2
+                            3 x  - 2 x + 3
+
+>$showev('integrate(3*x^2-2*x+3,x)) // integral tak tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-139.png
+% // latex: \int {3\,x^2-2\,x+3}{\;dx}=x^3-x^2+3\,x
+>$showev('integrate(3*x^2-2*x+3,x,-1,2)) // integral tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-140.png
+% // latex: \int_{-1}^{2}{3\,x^2-2\,x+3\;dx}=15
+>x=-1:0.1:2-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",-1,2,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-141.png
+% 2. Hitunglah integral dari fungsi berikut:
+%% latex: \int \frac{sin\ x}{1+cos\ x}\ dx\ dan\ \int_{-\frac{\pi}{2}}^{\frac{\pi}{2}} \frac{sin\ x}{1+cos\ x}\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-142.png
+% // latex: \int \frac{sin\ x}{1+cos\ x}\ dx\ dan\ \int_{-\frac{\pi}{2}}^{\frac{\pi}{2}} \frac{sin\ x}{1+cos\ x}\ dx
+>function h(x) &= sin(x)/(1+cos(x))
+
+                                sin(x)
+                              ----------
+                              cos(x) + 1
+
+>$showev('integrate(h(x),x)) // integral tak tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-143.png
+% // latex: \int {\frac{\sin x}{\cos x+1}}{\;dx}=-\log \left(\cos x+1\right)
+>$showev('integrate(h(x),x,0,pi/2)) // integral tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-144.png
+% // latex: \int_{0}^{\frac{\pi}{2}}{\frac{\sin x}{\cos x+1}\;dx}=\log 2
+>x=-pi/2:0.1:pi/2-0.01; plot2d(x,h(x+0.01),>bar); plot2d("h(x)",-pi/2,pi/2,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-145.png
+% 3. Hitunglah integral dari fungsi berikut:
+%% latex: \int x^3\ dx\ dan\ \int_0^2 x^3\ dx\
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-146.png
+% // latex: \int x^3\ dx\ dan\ \int_0^2 x^3\ dx\
+>function f(x) &= x^3
+
+                                   3
+                                  x
+
+>$showev('integrate(x^3,x)) // integral tak tentu dari x^3
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-147.png
+% // latex: \int {x^3}{\;dx}=\frac{x^4}{4}
+>$showev('integrate(x^3,x,0,2)) // integral tentu dari x^3
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-148.png
+% // latex: \int_{0}^{2}{x^3\;dx}=4
+>x=0:0.1:2-0.01; plot2d(x,f(x+0.01),>bar); plot2d("f(x)",0,2,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-149.png
+% 4. Hitunglah integral dari fungsi berikut:
+%% latex: \int cos^2x\ sin\ x\ dx\ dan\ \int_{0}^{\frac{\pi}{2}} cos^2x\ sin\ x\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-150.png
+% // latex: \int cos^2x\ sin\ x\ dx\ dan\ \int_{0}^{\frac{\pi}{2}} cos^2x\ sin\ x\ dx
+>function h(x) &= (cos(x))^2*sin(x)
+
+                               2
+                            cos (x) sin(x)
+
+>$showev('integrate(h(x),x)) // integral tak tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-151.png
+% // latex: \int {\cos ^2x\,\sin x}{\;dx}=-\frac{\cos ^3x}{3}
+>$showev('integrate(h(x),x,0,pi/2)) // integral tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-152.png
+% // latex: \int_{0}^{\frac{\pi}{2}}{\cos ^2x\,\sin x\;dx}=\frac{1}{3}
+>x=0:0.1:pi/2-0.01; plot2d(x,h(x+0.01),>bar); plot2d("h(x)",0,pi/2,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-153.png
+% 5. Hitunglah integral dari fungsi berikut:
+%% latex: \int e^{-0.1x}sin\ x\ dx\ dan\ \int_{0}^{8\pi} e^{-0.1x}sin\ x\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-154.png
+% // latex: \int e^{-0.1x}sin\ x\ dx\ dan\ \int_{0}^{8\pi} e^{-0.1x}sin\ x\ dx
+>function g(x) &= E^(-0.1*x)*sin(x)
+
+                            - 0.1 x
+                           E        sin(x)
+
+>$showev('integrate(g(x),x)) // integral tak tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-155.png
+% // latex: \int {e^ {- 0.1\,x }\,\sin x}{\;dx}=0.9900990099009901\,e^ {- 0.1\,  x }\,\left(-0.1\,\sin x-\cos x\right)
+>$showev('integrate(g(x),x,0,8*pi)) // integral tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-156.png
+% // latex: \int_{0}^{8\,\pi}{e^ {- 0.1\,x }\,\sin x\;dx}=\frac{100}{101}-  \frac{100\,e^ {- \frac{4\,\pi}{5} }}{101}
+>x=0:0.5:8*pi-0.01; plot2d(x,g(x+0.01),>bar); plot2d("g(x)",0,8*pi,>add):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-157.png
+% 6.
+%% latex: \int \left |\frac{sin\ x}{x}\right |\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-158.png
+% // latex: \int \left |\frac{sin\ x}{x}\right |\ dx
+%% Apakah fungsi di atas dapat diintegralkan?
+>function p(x) &= abs(sin(x)/x)
+
+                             mabs(sin(x))
+                             ------------
+                               mabs(x)
+
+>$showev('integrate(p(x),x)) // integral tak tentu
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-159.png
+% // latex: \int {\frac{\left| \sin x\right| }{\left| x\right| }}{\;dx}=\int {  \frac{\left| \sin x\right| }{\left| x\right| }}{\;dx}
+% Jadi, untuk
+%% latex: \int \left |\frac{sin\ x}{x}\right |\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-160.png
+% // latex: \int \left |\frac{sin\ x}{x}\right |\ dx
+%% Tidak ada antiderivatif dasar,
+%% latex: \frac{sin\ x}{x}\ge 0
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-161.png
+% // latex: \frac{sin\ x}{x}\ge 0
+%% Tidak ada antiderivatif dasar,
+%% latex: \frac{sin\ x}{x} < 0
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-162.png
+% // latex: \frac{sin\ x}{x} < 0
+% 
+% 
+% 7. Sketsakan daerah yang dibatasi oleh grafik-grafik persamaan yang
+% diketahui, hampiri luasnya, susun suatu integral dan hitunglah luas
+% daerahnya.
+%% latex: y=x+4 \ dan\ y=x^2-2
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-163.png
+% // latex: y=x+4 \ dan\ y=x^2-2
+>function f(x) &= x+4; ...
+>function g(x) &=x^2-2;
+>plot2d(["f(x)","g(x)"],-3,4):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-164.png
+% Dari gambar di atas terlihat bahwa fungsi y=x+4 berada di lebih atas
+% daripada y=x^2-2, dan keduanya berpotongan di x=-2 dan x=3, maka
+% hitungan integral yang tepat untuk daerah di atas adalah
+%% latex: \int_{-2}^{3} (x+4)-(x^2-2)\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-165.png
+% // latex: \int_{-2}^{3} (x+4)-(x^2-2)\ dx
+>plot2d("f(x)","g(x)",xmin=-2,xmax=3,>filled,style="/"):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-166.png
+>function h(x) &= f(x)-g(x)
+
+                                2
+                             - x  + x + 6
+
+>$showev('integrate(h(x),x,-2,3))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-167.png
+% // latex: \int_{-2}^{3}{-x^2+x+6\;dx}=\frac{125}{6}
+% Jadi, luas daerah yang dibatasi oleh kurva
+%% latex: y=x+4\ dan\ y=x^2-2
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-168.png
+% // latex: y=x+4\ dan\ y=x^2-2
+%% adalah
+%% latex: \frac{125}{6}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-169.png
+% // latex: \frac{125}{6}
+% 
+% 
+% 8. Tentukan volume benda putar yang dibentuk oleh daerah R yang
+% dibatasi oleh kurva y=sqrt(x), sumbu x dan garis x=4 apabila R diputar
+% mengelilingi sumbu x.
+%% Penyelesaian:
+%% latex: V=\int_{a}^{b} \pi(f(x))^2\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-170.png
+% // latex: V=\int_{a}^{b} \pi(f(x))^2\ dx
+%% latex: V=\int_{0}^{4} \pi(\sqrt(x))^2\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-171.png
+% // latex: V=\int_{0}^{4} \pi(\sqrt(x))^2\ dx
+>function f(x) &= sqrt(x)
+
+                               sqrt(x)
+
+>$showev('integrate(pi*(f(x))^2,x,0,4))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-172.png
+% // latex: \pi\,\int_{0}^{4}{x\;dx}=8\,\pi
+>plot3d("sqrt(x)",a=0,b=4,rotate=true,grid=7):
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-173.png
+% 9. Tentukan panjang kurva berikut:
+%% latex: y=4x^{\frac{3}{2}}
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-174.png
+% // latex: y=4x^{\frac{3}{2}}
+%% antara x=1/3 dan x=5.
+%% Penyelesaian:
+%% latex: S=\int_{a}^{b} \sqrt{1+(f'(x))^2}\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-175.png
+% // latex: S=\int_{a}^{b} \sqrt{1+(f'(x))^2}\ dx
+%% latex: S=\int_{\frac{1}{3}}^{5} \sqrt{1+(y')^2}\ dx
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-176.png
+% // latex: S=\int_{\frac{1}{3}}^{5} \sqrt{1+(y')^2}\ dx
+>plot2d("4*x^(3/2)",-3/2,5): 
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-177.png
+>function f(x) &= 4*x^(3/2); ...
+>$showev('limit((4*(x+h)^(3/2)-(4*x^(3/2)))/h,h,0)) // mencari df(x)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-178.png
+% // latex: \lim_{h\rightarrow 0}{\frac{4\,\left(x+h\right)^{\frac{3}{2}}-4\,x  ^{\frac{3}{2}}}{h}}=6\,\sqrt{x}
+>$showev('integrate(sqrt(1+(6*sqrt(x))^2),x,1/3,5))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-179.png
+% // latex: \int_{\frac{1}{3}}^{5}{\sqrt{36\,x+1}\;dx}=\frac{181^{\frac{3}{2}}  }{54}-\frac{13^{\frac{3}{2}}}{54}
+% 
+% Jadi, panjang kurva y=4*x^(3/2) di antara x=1/3 dan x=5 adalah
+%% latex: \frac{1}{54}(181\sqrt{181}-13\sqrt{13})
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-180.png
+% // latex: \frac{1}{54}(181\sqrt{181}-13\sqrt{13})
+>
+% * Barisan dan Deret
+% 
+% (Catatan: bagian ini belum lengkap. Anda dapat membaca contoh-contoh pengguanaan EMT dan
+% Maxima untuk menghitung limit barisan, rumus jumlah parsial suatu deret, jumlah tak hingga
+% suatu deret konvergen, dan sebagainya. Anda dapat mengeksplor contoh-contoh di EMT atau
+% perbagai panduan penggunaan Maxima di software Maxima atau dari Internet.)
+% 
+% Barisan dapat didefinisikan dengan beberapa cara di dalam EMT, di antaranya:
+% 
+% - dengan cara yang sama seperti mendefinisikan vektor dengan elemen-elemen beraturan
+% (menggunakan titik dua ":");
+%% - menggunakan perintah "sequence" dan rumus barisan (suku ke -n);
+%% - menggunakan perintah "iterate" atau "niterate";
+%% - menggunakan fungsi Maxima "create_list" atau "makelist" untuk menghasilkan barisan
+% simbolik;
+%% - menggunakan fungsi biasa yang inputnya vektor atau barisan;
+%% - menggunakan fungsi rekursif.
+% 
+% EMT menyediakan beberapa perintah (fungsi) terkait barisan, yakni:
+% 
+% - sum: menghitung jumlah semua elemen suatu barisan
+%% - cumsum: jumlah kumulatif suatu barisan
+%% - differences: selisih antar elemen-elemen berturutan
+% 
+% EMT juga dapat digunakan untuk menghitung jumlah deret berhingga maupun deret tak hingga,
+% dengan menggunakan perintah (fungsi) "sum". Perhitungan dapat dilakukan secara numerik
+% maupun simbolik dan eksak.
+% 
+% Berikut adalah beberapa contoh perhitungan barisan dan deret menggunakan EMT.
+>1:10 // barisan sederhana
+[1,  2,  3,  4,  5,  6,  7,  8,  9,  10]
+>1:2:30
+[1,  3,  5,  7,  9,  11,  13,  15,  17,  19,  21,  23,  25,  27,  29]
+>sum(1:2:30), sum(1/(1:2:30))
+225
+2.33587263431
+>
+>
+>$'sum(k, k, 1, n) = factor(ev(sum(k, k, 1, n),simpsum=true)) // simpsum:menghitung deret secara simbolik
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-181.png
+% // latex: \sum_{k=1}^{n}{k}=\frac{n\,\left(n+1\right)}{2}
+>$'sum(1/(3^k+k), k, 0, inf) = factor(ev(sum(1/(3^k+k), k, 0, inf),simpsum=true))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-182.png
+% // latex: \sum_{k=0}^{\infty }{\frac{1}{3^{k}+k}}=\sum_{k=0}^{\infty }{\frac{  1}{3^{k}+k}}
+% Di sini masih gagal, hasilnya tidak dihitung.
+>
+>$'sum(1/x^2, x, 1, inf)= ev(sum(1/x^2, x, 1, inf),simpsum=true) // ev: menghitung nilai ekspresi
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-183.png
+% // latex: \sum_{x=1}^{\infty }{\frac{1}{x^2}}=\frac{\pi^2}{6}
+>$'sum((-1)^(k-1)/k, k, 1, inf) = factor(ev(sum((-1)^(x-1)/x, x, 1, inf),simpsum=true))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-184.png
+% // latex: \sum_{k=1}^{\infty }{\frac{\left(-1\right)^{k-1}}{k}}=-\sum_{x=1}^{  \infty }{\frac{\left(-1\right)^{x}}{x}}
+% Di sini masih gagal, hasilnya tidak dihitung.
+>$'sum((-1)^k/(2*k-1), k, 1, inf) = factor(ev(sum((-1)^k/(2*k-1), k, 1, inf),simpsum=true))
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-185.png
+% // latex: \sum_{k=1}^{\infty }{\frac{\left(-1\right)^{k}}{2\,k-1}}=\sum_{k=1  }^{\infty }{\frac{\left(-1\right)^{k}}{2\,k-1}}
+>$ev(sum(1/n!, n, 0, inf),simpsum=true)
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-186.png
+% // latex: \sum_{n=0}^{\infty }{\frac{1}{n!}}
+% Di sini masih gagal, hasilnya tidak dihitung, harusnya hasilnya e.
+>&assume(abs(x)<1); $'sum(a*x^k, k, 0, inf)=ev(sum(a*x^k, k, 0, inf),simpsum=true), &forget(abs(x)<1);
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-187.png
+% // latex: a\,\sum_{k=0}^{\infty }{x^{k}}=\frac{a}{1-x}
+% Deret geometri tak hingga, dengan asumsi rasional antara -1 dan 1.
+>
+>
+% * Deret Taylor
+% 
+% Deret Taylor suatu fungsi f yang diferensiabel sampai tak hingga di
+% sekitar x=a adalah:
+% 
+% latex: f(x) = \sum_{k=0}^\infty \frac{(x-a)^k f^{(k)}(a)}{k!}.
+% %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-188.png
+% // latex: f(x) = \sum_{k=0}^\infty \frac{(x-a)^k f^{(k)}(a)}{k!}.
+>$'e^x =taylor(exp(x),x,0,10) // deret Taylor e^x di sekitar x=0, sampai suku ke-11
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-189.png
+% // latex: e^{x}=\frac{x^{10}}{3628800}+\frac{x^9}{362880}+\frac{x^8}{40320}+  \frac{x^7}{5040}+\frac{x^6}{720}+\frac{x^5}{120}+\frac{x^4}{24}+  \frac{x^3}{6}+\frac{x^2}{2}+x+1
+>$'log(x)=taylor(log(x),x,1,10)// deret log(x) di sekitar x=1
+ %image% EMT4Kalkulus_Shelly Ermawati_22305141002_MatB-190.png
+% // latex: \log x=x-\frac{\left(x-1\right)^{10}}{10}+\frac{\left(x-1\right)^9  }{9}-\frac{\left(x-1\right)^8}{8}+\frac{\left(x-1\right)^7}{7}-  \frac{\left(x-1\right)^6}{6}+\frac{\left(x-1\right)^5}{5}-\frac{  \left(x-1\right)^4}{4}+\frac{\left(x-1\right)^3}{3}-\frac{\left(x-1  \right)^2}{2}-1
+>
+>
+>
